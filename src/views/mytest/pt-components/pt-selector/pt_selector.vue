@@ -325,7 +325,7 @@ export default {
 
                     var sTemp = util.json2Form(task_params);
 
-                    console.log( "CCC:"+ sTemp );
+                    //console.log( "CCC:"+ sTemp );
 
                     service_params.append( 'service_args', util.json2Form(task_params) );
 
