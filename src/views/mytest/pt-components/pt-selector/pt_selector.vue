@@ -59,9 +59,27 @@ const newLinkageArr = util.levelArr;
 
 import axios from 'axios';
 
+// var httpinstance = axios.create({
+//     baseURL: 'http://192.168.232.11:5000'
+// });
+
 var httpinstance = axios.create({
-    baseURL: 'http://192.168.232.11:5000'
+    baseURL: 'http://192.168.58.11:5000'
 });
+
+var config_axios =  {
+    method: 'post',
+    url: '',
+    headers: {
+        'Content-type': 'application/x-www-form-urlencoded'
+        //'Content-type': 'application/json'
+    },
+    data: [],
+    //params:[]
+}
+
+var service_params = new URLSearchParams();
+var task_params = {};
 
 const columns_format = [
 /*    {
@@ -251,7 +269,20 @@ export default {
             // console.log( "AAA:"+this.value);
             // console.log( "BBB:"+this.level);
 
-            httpinstance.get('/getlevel/1')
+            //config_axios.params['service_id'] = '10000001';
+
+            service_params = new URLSearchParams();
+            service_params.append('service_id', '10000001');       //你要传给后台的参数值 key/value
+
+            //postdata:Util.json2Form(params)
+
+            config_axios.data = service_params;
+            config_axios.url = '/task';
+
+            // httpinstance.get( '/getlevel/1' )
+            // httpinstance.post('/task?service_id=10000001')
+
+            httpinstance( config_axios )
                 .then((res) => {
 
                     //console.log( "BBB:"+ res.data);
@@ -282,7 +313,30 @@ export default {
         handleSearchItem(){
             for( let ArrayItem of this.FirstLevel_Array){
                 if( ArrayItem.app_ename === this.SecondLevel_Value ){
-                    httpinstance.get('/getlogical/'+ArrayItem.app_id)
+
+                    //httpinstance.get('/getlogical/'+ArrayItem.app_id)
+                    //httpinstance.post('/task?service_id=10000002&' + ArrayItem.app_id )
+
+                    service_params = new URLSearchParams();
+                    task_params = {};
+
+                    service_params.append('service_id', '10000002');       //要传给后台的参数值 key/value
+                    task_params[ 'app_id' ] = ArrayItem.app_id;
+
+                    var sTemp = util.json2Form(task_params);
+
+                    console.log( "CCC:"+ sTemp );
+
+                    service_params.append( 'service_args', util.json2Form(task_params) );
+
+                    //postdata:Util.json2Form(params) ;
+
+                    console.log( "CCC:"+service_params['service_args']);
+
+                    config_axios.data = service_params;
+                    config_axios.url = '/task';
+
+                    httpinstance(config_axios)
                         .then((res) => {
                             if (res.status === 200) {
                                 this.GetJsonStr = res.data;
