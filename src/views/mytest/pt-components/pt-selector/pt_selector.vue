@@ -1,7 +1,7 @@
 <template>
     <div>
         <Row :gutter="gutterNum">
-            <Col :span="span" v-if="show(0)">
+            <Col :span="span" v-if="show(1)">
                 <Select
                     ref="LEVEL1"
                     v-model="FirstLevel_Value"
@@ -13,7 +13,7 @@
                     <Option v-for=" item in FirstLevel_Array" :value="item.app_cname" :key="item.app_id">{{ item.app_cname }}</Option>
                 </Select>
             </Col>
-            <Col :span="span" v-if="show(1)">
+            <Col :span="span" v-if="show(2)">
                 <Select
                     ref="LEVEL2"
                     v-model="SecondLevel_Value"
@@ -59,15 +59,15 @@ const newLinkageArr = util.levelArr;
 
 import axios from 'axios';
 
-// var httpinstance = axios.create({
-//     baseURL: 'http://192.168.232.11:5000'
-// });
-
-var httpinstance = axios.create({
-    baseURL: 'http://192.168.58.11:5000'
+let httpinstance = axios.create({
+    baseURL: 'http://192.168.232.11:5000'
 });
 
-var config_axios =  {
+// var httpinstance = axios.create({
+//     baseURL: 'http://192.168.58.11:5000'
+// });
+
+let config_axios =  {
     method: 'post',
     url: '',
     headers: {
@@ -76,10 +76,18 @@ var config_axios =  {
     },
     data: [],
     //params:[]
-}
+};
 
-var service_params = new URLSearchParams();
-var task_params = {};
+let service_params = new URLSearchParams();
+let task_params = {};
+
+const url_route = {
+    'system' : '10000001' ,
+    'app_id' : '10000002' ,
+    'service' : '10000003' ,
+    'service_id' : '10000004'
+};
+
 
 const columns_format = [
 /*    {
@@ -240,39 +248,20 @@ export default {
                 }
 
             }
-        },
-/*        currCit (city) {
-            this.updateNextSelector('cityIndex', 'cityList', 'counList', city, 'currCou', 1);
-            if (this.showLevel === 1 || (!areaData[util.getIndex(this.provList, city)]) || !this.auto) {
-                this.returnRes(1);
-            }
-        },
-        currCou (coun) {
-            this.updateNextSelector('counIndex', 'counList', 'streList', coun, 'currStr', 2);
-            if (this.showLevel === 2 || !this.auto) {
-                this.returnRes(2);
-            }
-        },
-        currStr (str) {
-            this.streIndex = util.getIndex(this.streList, str);
-            if (this.showLevel === 3 || !this.auto) {
-                this.returnRes(3);
-            }
-        },*/
-/*        value () {
-            this.value = ['河北省', '张家口市'];
-        }*/
+        }
+
     },
     methods: {
         init () {
 
-            // console.log( "AAA:"+this.value);
-            // console.log( "BBB:"+this.level);
+            console.log( "AAA:"+this.value[0]);
+            console.log( "BBB:"+this.value[1]);
+            console.log( "CCC:"+this.level);
 
             //config_axios.params['service_id'] = '10000001';
 
             service_params = new URLSearchParams();
-            service_params.append('service_id', '10000001');       //你要传给后台的参数值 key/value
+            service_params.append('service_id', url_route[ this.value[0] ]);       //你要传给后台的参数值 key/value
 
             //postdata:Util.json2Form(params)
 
@@ -294,7 +283,7 @@ export default {
                         this.FirstLevel_Array = this.GetJsonStr['LEVEL_1'] ;
 
                         //console.log( "BBB:"+ this.FirstLevel_Array);
-                    };
+                    }
                 })
                 .catch(function(err) {
                     console.log(err); // 从数据库获取数据出现问题
@@ -303,14 +292,21 @@ export default {
 
         show (level) {
 
-            if (level <= this.showLevel) {
-                return true;
-            } else {
-                return false;
-            }
+            return level <= this.showLevel;
         },
 
         handleSearchItem(){
+
+            let url_route_id = 'none';
+
+            if ( this.value[0] === 'system' ){
+                url_route_id = "app_id" ;
+            }
+
+            if ( this.value[0] === 'service' ){
+                url_route_id = "service_id" ;
+            }
+
             for( let ArrayItem of this.FirstLevel_Array){
                 if( ArrayItem.app_ename === this.SecondLevel_Value ){
 
@@ -320,18 +316,15 @@ export default {
                     service_params = new URLSearchParams();
                     task_params = {};
 
-                    service_params.append('service_id', '10000002');       //要传给后台的参数值 key/value
+                    service_params.append('service_id', url_route_id );       //要传给后台的参数值 key/value
                     task_params[ 'app_id' ] = ArrayItem.app_id;
 
-                    var sTemp = util.json2Form(task_params);
-
+                    //var sTemp = util.json2Form(task_params);
                     //console.log( "CCC:"+ sTemp );
+                    //service_params.append( 'service_args', sTemp );
 
                     service_params.append( 'service_args', util.json2Form(task_params) );
-
-                    //postdata:Util.json2Form(params) ;
-
-                    console.log( "CCC:"+service_params['service_args']);
+                    console.log( "service_args:" + service_params.get('service_args') );
 
                     config_axios.data = service_params;
                     config_axios.url = '/task';
@@ -341,7 +334,7 @@ export default {
                             if (res.status === 200) {
                                 this.GetJsonStr = res.data;
                                 this.AppLogical_Array = this.GetJsonStr['LOGICAL_INFO'] ;
-                            };
+                            }
                         })
                         .catch(function(err) {
                             console.log(err); // 从数据库获取数据出现问题

@@ -226,10 +226,11 @@ export const appRouter = [
         path: '/mytest',
         icon: 'android-checkbox',
         title: '我的测试页',
-        name: 'My test page',
+        name: 'My Founction',
         component: Main,
         children: [
-            { path: 'index', title: '我的测试页', name: 'mytest_index', component: () => import('@/views/mytest/mytest_select.vue') }
+            { path: 'mytest_select', title: '前端公共组件', name: 'mytest_select', component: () => import('@/views/mytest/mytest_select.vue') },
+            { path: 'mytest_service_config', title: '服务配置管理', name: 'mytest_svr_cnf', component: () => import('@/views/mytest/mytest_service_config.vue') }
         ]
     }
 ];

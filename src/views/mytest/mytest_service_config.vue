@@ -14,9 +14,9 @@
                     </p>
                     <Row class="area-linkage-page-row1">
                         <pt-Selector
-                            v-model="resDefault"
-                            level="2"
-                            auto
+                                v-model="resDefault"
+                                level='2'
+                                auto
                         />
                     </Row>
                 </Card>
@@ -33,7 +33,7 @@
                         <span>插件返回操作目标：</span><br/>
                         <br>
                         <!--<i-input v-for="item in showRes"  :values.sync="item.detail">-->
-                            <!--<span slot="prepend">{{item.name+"  "}}</span>-->
+                        <!--<span slot="prepend">{{item.name+"  "}}</span>-->
                         <!--</i-input>-->
 
                         <!--<input v-for="(  item, index) in listDetail" :key="index" v-model="listDetail[index]" />-->
@@ -64,67 +64,68 @@
 </template>
 
 <script>
-// import alSelector from './components/al-selector.vue';
-// import alCascader from './components/al-cascader.vue';
+    // import alSelector from './components/al-selector.vue';
+    // import alCascader from './components/al-cascader.vue';
 
-//import ptSelector from './pt-components/pt-selector/pt_selector.vue';
+    //import ptSelector from './pt-components/pt-selector/pt_selector.vue';
 
-import Vue from 'vue';
-import ptComponents from './pt-components';
+    import Vue from 'vue';
+    import ptComponents from './pt-components';
 
-Vue.use(ptComponents);
+    Vue.use(ptComponents);
 
-export default {
-    // components: {
-    //     alSelector,
-    //     alCascader
-    // },
-    data () {
-        return {
-            res1: [],
-            //resDefault: { 'OBJ_NAME':'system', 'USER_NAME':'none' } ,
-            resDefault: [ 'system', '2' ] ,
-            showRes: [],
-            showFlag:false,
-            listCol:[],
-            listDetail:[]
-        };
-    },
-    methods: {
-        renderFormat (label) {
-            return label.join(' => ');
+    export default {
+        // components: {
+        //     alSelector,
+        //     alCascader
+        // },
+        data () {
+            return {
+                res1: [],
+                //resDefault: { 'OBJ_NAME':'system', 'USER_NAME':'none' } ,
+                resDefault: [ 'service', '1' ] ,
+                //resDefault: ['', '', '', ''],
+                showRes: [],
+                showFlag:false,
+                listCol:[],
+                listDetail:[]
+            };
         },
+        methods: {
+            renderFormat (label) {
+                return label.join(' => ');
+            },
 
-        show(var1){
-            return this.showFlag;
+            show(var1){
+                return this.showFlag;
+            },
+
+            print() {
+                console.log(this.showRes);
+            }
         },
+        watch: {
+            res1 (val) {
+                this.showRes = val;
+            },
+            resDefault (val) {
 
-        print() {
-            console.log(this.showRes);
-        }
-    },
-    watch: {
-        res1 (val) {
-            this.showRes = val;
-        },
-        resDefault (val) {
+                this.showRes = val;
+                this.showFlag = true;
 
-            this.showRes = val;
-            this.showFlag = true;
+                this.listDetail = [];
+                this.listCol = [];
 
-            this.listDetail = [];
-            this.listCol = [];
+                for( var index in this.showRes){
 
-            for( var index in this.showRes){
+                    if( index%2 ){
+                        this.listDetail.push(this.showRes[index]);
+                    }else{
+                        this.listCol.push(this.showRes[index]);
+                    }
 
-                if( index%2 ){
-                    this.listDetail.push(this.showRes[index]);
-                }else{
-                    this.listCol.push(this.showRes[index]);
                 }
-
             }
         }
-    }
-};
+    };
 </script>
