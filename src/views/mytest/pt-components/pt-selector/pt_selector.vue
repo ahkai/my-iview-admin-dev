@@ -59,13 +59,24 @@ const newLinkageArr = util.levelArr;
 
 import axios from 'axios';
 
-let httpinstance = axios.create({
-    baseURL: 'http://192.168.232.11:5000'
-});
+let ip_addr = document.location.hostname;
 
-// var httpinstance = axios.create({
-//     baseURL: 'http://192.168.58.11:5000'
-// });
+console.log( "ip_addr:"+ ip_addr );
+
+if ( ip_addr == '192.168.58.11' ){
+    var httpinstance = axios.create({
+    baseURL: 'http://192.168.58.11:5000'
+    });
+
+    console.log( "httpinstance:"+ 'http://192.168.58.11:5000' );
+
+}else{
+    var httpinstance = axios.create({
+        baseURL: 'http://192.168.232.11:5000'
+    });
+
+    console.log( "httpinstance:"+ 'http://192.168.232.11:5000' );
+}
 
 let config_axios =  {
     method: 'post',
