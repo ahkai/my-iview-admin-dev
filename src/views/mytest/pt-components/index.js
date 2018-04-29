@@ -1,11 +1,14 @@
-import ptSelector from './pt-selector/pt_selector';
+import ptSelector from './pt_selector';
+import ptCanedittable from './pt_canEditTable';
 
 const ptComponents = {
-    ptSelector
+    ptSelector,
+    ptCanedittable
 };
 
 const install = function(Vue, opts = {}) {
     Vue.component(ptSelector.name, ptSelector);
+    Vue.component(ptCanedittable.name, ptCanedittable);
 };
 
 if (typeof window !== 'undefined' && window.Vue) {

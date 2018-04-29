@@ -16,7 +16,7 @@
                         <pt-Selector
                             v-model="resDefault"
                             level="2"
-                            auto
+                            size="small"
                         />
                     </Row>
                 </Card>

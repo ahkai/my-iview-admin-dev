@@ -10,7 +10,7 @@
                     :size="size"
                     style="width:100%">
 
-                    <Option v-for=" item in FirstLevel_Array" :value="item.app_cname" :key="item.app_id">{{ item.app_cname }}</Option>
+                    <Option v-for=" item in FirstLevel_Array" :value="item.obj_name" :key="item.obj_id">{{ item.obj_name }}</Option>
                 </Select>
             </Col>
             <Col :span="span" v-if="show(2)">
@@ -21,7 +21,7 @@
                     transfer
                     :size="size"
                     style="width:100%">
-                    <Option v-for=" item in FirstLevel_Array" :value="item.app_ename" :key="item.app_id">{{ item.app_ename }}</Option>
+                    <Option v-for=" item in SecondLevel_Array" :value="item.obj_name" :key="item.obj_id">{{ item.obj_name }}</Option>
                 </Select>
             </Col>
             <!--<Col :span="span" v-if="show(2)">
@@ -40,12 +40,17 @@
                 </Select>
             </Col>-->
             <Col :span="span">
-                <span @click="handleSearchItem" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
+                <span @click="handleSearchItem" style="margin: 0 10px;"><Button type="primary" :disabled="ButtonFlag" icon="search">搜索</Button></span>
             </Col>
         </Row>
-        <Row class="margin-top-10">
+<!--        <Row class="margin-top-10" v-if="showtable()">
             <i-table @on-current-change="RetSelectData" highlight-row height="200" :columns="columns_def" :data="AppLogical_Array" ></i-table>
-        </Row>
+        </Row>-->
+<!--        <Row class="margin-top-10" v-if="showtable()">
+            <div class="edittable-table-height-con">
+                <Table border :columns="columns_def_new" :data="AppLogical_Array"></Table>
+            </div>
+        </Row>-->
         <slot></slot>
         <!--<span>{{ AppLogical_Array}}</span>-->
     </div>
@@ -53,9 +58,11 @@
 
 <script>
 
-import util from '../../util/index';
+import util from '../util/index';
+
 const newLinkageArr = util.levelArr;
-//const dataTypeArr = util.dataType;
+const columns_format_1 = util.columns_format_1;
+const columns_format_2 = util.columns_format_2;
 
 import axios from 'axios';
 
@@ -95,50 +102,10 @@ let task_params = {};
 const url_route = {
     'system' : '10000001' ,
     'app_id' : '10000002' ,
-    'service' : '10000003' ,
-    'service_id' : '10000004'
+    'service_type' : '10000003' ,
+    'service_info' : '10000004',
+    'service_detail' : '10000005',
 };
-
-
-const columns_format = [
-/*    {
-        type: 'selection',
-        width: 60,
-        align: 'center'
-    },*/
-    {
-        key: 'logical_id',
-        title: 'ID'
-    },
-    {
-        key: 'logical_name',
-        title: '机器名'
-    },
-    {
-        key: 'logical_type',
-        title: '设备类型'
-    },
-    {
-        key: 'cpu_num',
-        title: '处理器'
-    },
-    {
-        key: 'mem_num',
-        title: '内存'
-    },
-/*    {
-        key: 'os_type_id',
-        title: '操作系统ID'
-    },*/
-    {
-        key: 'type_desc',
-        title: '描述1'
-    },
-    {
-        key: 'type_desc2',
-        title: '描述2'
-    }
-];
 
 export default {
     name: 'ptSelector',
@@ -150,18 +117,15 @@ export default {
             ThirdLevel_Value: '',
             FourthLevel_Value: '',
 
-            FirstLevel_Array: {},
-            cityList: {},
-            counList: {},
-            streList: {},
+            FirstLevel_Array: [],
+            SecondLevel_Array: [],
 
-            FirstIndex: 0,
-            SecondIndex: 0,
-            ThirdIndex: 0,
-            FourthIndex: 0,
+            FindLevel: 0,
+            ButtonFlag:true,
+            TableFlag:false,
 
             AppLogical_Array:[],
-            columns_def:columns_format,
+            columns_def: [],
 
             isInit: true,
             defaultPlaceholder: ['请选择', '请选择', '请选择', '请选择'],
@@ -197,7 +161,7 @@ export default {
         },*/
         auto: {
             type: Boolean,
-            default: false
+            default: true
         },
         placeholder: {
             type: [Array, String],
@@ -237,28 +201,77 @@ export default {
                 return 24 / (this.showLevel + 1);
             }
         }
+
     },
     watch: {
         FirstLevel_Value (newValue) {
-
-            for (let ArrayItem of this.FirstLevel_Array) {
-
-                if (ArrayItem.app_cname === newValue) {
-                    this.SecondLevel_Value = ArrayItem.app_ename;
+            if( this.value[0] == 'system'){
+                for (let ArrayItem of this.FirstLevel_Array) {
+                    if (ArrayItem.obj_name === newValue) {
+                        this.SecondLevel_Value = ArrayItem.app_ename;
+                    }
                 }
+            }
 
+            if( this.value[0] == 'service_type'){
+                for( let ArrayItem of this.FirstLevel_Array) {
+
+                    if (ArrayItem.obj_name === newValue) {
+
+                        service_params = new URLSearchParams();
+                        task_params = {};
+
+                        service_params.append('service_id', url_route[ 'service_info' ]);       //你要传给后台的参数值 key/value
+                        task_params[ 'type_id' ] = ArrayItem.obj_id;
+
+                        service_params.append( 'service_args', util.json2Form(task_params) );
+
+                        config_axios.data = service_params;
+                        config_axios.url = '/task';
+
+                        httpinstance( config_axios )
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    this.GetJsonStr = res.data;
+                                    this.SecondLevel_Array = this.GetJsonStr['LEVEL_2'];
+                                    this.FindLevel = 2;
+                                }
+                            })
+                            .catch(function(err) {
+                                console.log(err); // 从数据库获取数据出现问题
+                            });
+
+                        break
+                    }
+                }
             }
         },
 
-        SecondLevel_Value (newValue) {
+        SecondLevel_Value (newValue){
 
-            for( let ArrayItem of this.FirstLevel_Array){
-
-                if( ArrayItem.app_ename === newValue ){
-                    this.FirstLevel_Value = ArrayItem.app_cname ;
+            if( this.value[0] == 'system' ){
+                for( let ArrayItem of this.FirstLevel_Array){
+                    if( ArrayItem.app_ename === newValue ){
+                        this.FirstLevel_Value = ArrayItem.obj_name ;
+                    }
                 }
-
             }
+
+            if( this.value[0] == 'service_type' ){
+                if ( newValue ){
+                    this.ButtonFlag = false;
+                }
+            }
+
+
+
+            // for( let ArrayItem of this.SecondLevel_Array){
+            //
+            //     // if( ArrayItem.app_ename === newValue ){
+            //     //     this.SecondLevel_Array = ArrayItem.app_cname ;
+            //     // }
+            //
+            // }
         }
 
     },
@@ -268,32 +281,52 @@ export default {
             console.log( "AAA:"+this.value[0]);
             console.log( "BBB:"+this.value[1]);
             console.log( "CCC:"+this.level);
+            console.log( "DDD:"+this.size);
 
-            //config_axios.params['service_id'] = '10000001';
+            if( this.value[0] == 'system'){
+                this.FindLevel = this.level;
+                this.ButtonFlag = false;
+                this.columns_def = columns_format_1;
+                this.TableFlag = true
+            }
+
+            if( this.value[0] == 'service_type'){
+                this.FindLevel = 0;
+                this.ButtonFlag = true;
+                this.columns_def = columns_format_2;
+                this.TableFlag = true
+            }
 
             service_params = new URLSearchParams();
             service_params.append('service_id', url_route[ this.value[0] ]);       //你要传给后台的参数值 key/value
 
-            //postdata:Util.json2Form(params)
-
             config_axios.data = service_params;
             config_axios.url = '/task';
-
-            // httpinstance.get( '/getlevel/1' )
-            // httpinstance.post('/task?service_id=10000001')
 
             httpinstance( config_axios )
                 .then((res) => {
 
-                    //console.log( "BBB:"+ res.data);
-
                     if (res.status === 200) {
 
                         this.GetJsonStr = res.data;
+                        this.FirstLevel_Array = this.GetJsonStr['LEVEL_1'];
 
-                        this.FirstLevel_Array = this.GetJsonStr['LEVEL_1'] ;
+                        if( this.value[0] == 'system') {
 
-                        //console.log( "BBB:"+ this.FirstLevel_Array);
+                            this.SecondLevel_Array = [];
+                            for( let ArrayItem of this.FirstLevel_Array){
+                                let TempArray = {};
+                                TempArray['obj_name'] = ArrayItem.app_ename;
+                                TempArray['obj_id'] = ArrayItem.obj_id;
+                                TempArray['app_ename'] =  ArrayItem.obj_name;
+                                this.SecondLevel_Array.push(TempArray);
+                            }
+
+                        }
+
+                        if( this.value[0] == 'service_type') {
+                            this.FindLevel = 1;
+                        }
                     }
                 })
                 .catch(function(err) {
@@ -303,57 +336,60 @@ export default {
 
         show (level) {
 
-            return level <= this.showLevel;
+            return level <= this.showLevel && level <= this.FindLevel ;
+        },
+
+        showtable () {
+
+            return this.TableFlag ;
         },
 
         handleSearchItem(){
 
             let url_route_id = 'none';
+            task_params = {};
 
             if ( this.value[0] === 'system' ){
-                url_route_id = "app_id" ;
-            }
+                url_route_id = url_route[ 'app_id' ] ;
 
-            if ( this.value[0] === 'service' ){
-                url_route_id = "service_id" ;
-            }
-
-            for( let ArrayItem of this.FirstLevel_Array){
-                if( ArrayItem.app_ename === this.SecondLevel_Value ){
-
-                    //httpinstance.get('/getlogical/'+ArrayItem.app_id)
-                    //httpinstance.post('/task?service_id=10000002&' + ArrayItem.app_id )
-
-                    service_params = new URLSearchParams();
-                    task_params = {};
-
-                    service_params.append('service_id', url_route_id );       //要传给后台的参数值 key/value
-                    task_params[ 'app_id' ] = ArrayItem.app_id;
-
-                    //var sTemp = util.json2Form(task_params);
-                    //console.log( "CCC:"+ sTemp );
-                    //service_params.append( 'service_args', sTemp );
-
-                    service_params.append( 'service_args', util.json2Form(task_params) );
-                    console.log( "service_args:" + service_params.get('service_args') );
-
-                    config_axios.data = service_params;
-                    config_axios.url = '/task';
-
-                    httpinstance(config_axios)
-                        .then((res) => {
-                            if (res.status === 200) {
-                                this.GetJsonStr = res.data;
-                                this.AppLogical_Array = this.GetJsonStr['LOGICAL_INFO'] ;
-                            }
-                        })
-                        .catch(function(err) {
-                            console.log(err); // 从数据库获取数据出现问题
-                        });
-
-                    break
+                for( let ArrayItem of this.FirstLevel_Array){
+                    if( ArrayItem.app_ename === this.SecondLevel_Value ){
+                        task_params[ 'app_id' ] = ArrayItem.obj_id;
+                        break
+                    }
                 }
             }
+
+            if ( this.value[0] === 'service_type' ){
+                url_route_id = url_route[ 'service_detail' ] ;
+
+                for( let ArrayItem of this.SecondLevel_Array){
+                    if( ArrayItem.obj_name === this.SecondLevel_Value ){
+                        task_params[ 'service_type' ] = ArrayItem.obj_id;
+                        break
+                    }
+                }
+            }
+
+            service_params = new URLSearchParams();
+            service_params.append('service_id', url_route_id );       //要传给后台的参数值 key/value
+            service_params.append( 'service_args', util.json2Form(task_params) );
+
+            config_axios.data = service_params;
+            config_axios.url = '/task';
+
+            httpinstance(config_axios)
+                .then((res) => {
+                    if (res.status === 200) {
+                        this.GetJsonStr = res.data;
+                        this.AppLogical_Array = this.GetJsonStr['RowsArray'] ;
+
+                        this.$emit('input', this.AppLogical_Array);
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err); // 从数据库获取数据出现问题
+                });
         },
 
         RetSelectData(currentRow , oldCurrentRow){
