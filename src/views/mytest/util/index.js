@@ -170,5 +170,91 @@ util.columns_format_3 = [
     }
 ];
 
+util.columns_format_4 = [
+    {
+        key: 'type_id',
+        title: 'ID',
+    },
+    {
+        key: 'type_name',
+        title: '分类名称',
+    },
+    {
+        key: 'type_desc',
+        title: '分类描述',
+    },
+    {
+        key: 'type_level',
+        title: '分类级别',
+    },
+    {
+        key: 'type_uplevel',
+        title: '所属级别',
+    },
+    {
+        key: 'type_date',
+        title: '创建时间',
+    },
+    {
+        key: 'type_status',
+        title: '状态',
+    }
+];
+
+util.columns_format_5 = [
+    {
+        key: 'obj_id',
+        title: 'ID',
+        align: 'center',
+        width: 100
+    },
+    {
+        key: 'obj_name',
+        title: '分类名称',
+        align: 'center',
+        width: 100,
+        editable: true
+    },
+    {
+        key: 'type_desc',
+        title: '分类描述',
+        width: 175,
+        align: 'center',
+        editable: true
+    },
+    {
+        key: 'type_level',
+        title: '分类级别',
+        width: 150,
+        align: 'center',
+        editable: true
+    },
+    {
+        key: 'type_uplevel',
+        title: '所属级别',
+        width: 100,
+        align: 'center'
+     },
+    {
+        key: 'type_date',
+        title: '创建时间',
+        width: 100,
+        align: 'center'
+    },
+    {
+        key: 'type_status',
+        title: '状态',
+        align: 'center',
+        width: 100,
+        editable: true
+    },
+    {
+        title: '操作',
+        align: 'center',
+        width: 190,
+        key: 'handle',
+        handle: ['edit', 'delete']
+    }
+];
 
 export default util;

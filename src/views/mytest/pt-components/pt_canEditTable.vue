@@ -37,7 +37,7 @@ const editButton = (vm, h, currentRow, index) => {
                     edittingRow.editting = false;
                     edittingRow.saving = false;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                    vm.$emit('input', vm.handleBackdata(vm.thisTableData), index);
+                    // vm.$emit('input_from_edittable', vm.handleBackdata(vm.thisTableData), index);
                     vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index);
                 }
             }
@@ -53,9 +53,19 @@ const deleteButton = (vm, h, currentRow, index) => {
         },
         on: {
             'on-ok': () => {
+                let service_id = '';
+                if( vm.userflag == 'service_info'){
+                    service_id = vm.thisTableData[index].service_id;
+                }
+
+                if( vm.userflag == 'service_type'){
+                    service_id = vm.thisTableData[index].obj_id;
+                }
+
                 vm.thisTableData.splice(index, 1);
-                vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
+
+                // vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), service_id);
             }
         }
     }, [
@@ -149,7 +159,8 @@ export default {
         hoverShow: {
             type: Boolean,
             default: false
-        }
+        },
+        userflag:String
     },
     data () {
         return {

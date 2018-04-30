@@ -230,6 +230,7 @@ export const appRouter = [
         component: Main,
         children: [
             { path: 'mytest_select', title: '前端公共组件', name: 'mytest_select', component: () => import('@/views/mytest/mytest_select.vue') },
+            { path: 'mytest_service_level', title: '服务分类管理', name: 'mytest_svr_level', component: () => import('@/views/mytest/mytest_service_level.vue') },
             { path: 'mytest_service_config', title: '服务配置管理', name: 'mytest_svr_cnf', component: () => import('@/views/mytest/mytest_service_config.vue') }
         ]
     }

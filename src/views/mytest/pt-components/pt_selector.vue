@@ -40,7 +40,8 @@
                 </Select>
             </Col>-->
             <Col :span="span">
-                <span @click="handleSearchItem" style="margin: 0 10px;"><Button type="primary" :disabled="ButtonFlag" icon="search">搜索</Button></span>
+                <span @click="handleSearchItem" style="margin: 0 10px;"><Button type="primary"  :disabled="Button1Flag" icon="search">搜索</Button></span>
+                <span @click="InsertItem" style="margin: 0 10px;"><Button type="success"  :disabled="Button2Flag" icon="search">新增配置项</Button></span>
             </Col>
         </Row>
 <!--        <Row class="margin-top-10" v-if="showtable()">
@@ -63,6 +64,7 @@ import util from '../util/index';
 const newLinkageArr = util.levelArr;
 const columns_format_1 = util.columns_format_1;
 const columns_format_2 = util.columns_format_2;
+const columns_format_4 = util.columns_format_4;
 
 import axios from 'axios';
 
@@ -72,7 +74,7 @@ console.log( "ip_addr:"+ ip_addr );
 
 if ( ip_addr == '192.168.58.11' ){
     var httpinstance = axios.create({
-    baseURL: 'http://192.168.58.11:5000'
+        baseURL: 'http://192.168.58.11:5000'
     });
 
     console.log( "httpinstance:"+ 'http://192.168.58.11:5000' );
@@ -84,6 +86,7 @@ if ( ip_addr == '192.168.58.11' ){
 
     console.log( "httpinstance:"+ 'http://192.168.232.11:5000' );
 }
+
 
 let config_axios =  {
     method: 'post',
@@ -105,6 +108,7 @@ const url_route = {
     'service_type' : '10000003' ,
     'service_info' : '10000004',
     'service_detail' : '10000005',
+    'service_level' : '10000003'
 };
 
 export default {
@@ -121,7 +125,8 @@ export default {
             SecondLevel_Array: [],
 
             FindLevel: 0,
-            ButtonFlag:true,
+            Button1Flag:true,
+            Button2Flag:true,
             TableFlag:false,
 
             AppLogical_Array:[],
@@ -130,7 +135,9 @@ export default {
             isInit: true,
             defaultPlaceholder: ['请选择', '请选择', '请选择', '请选择'],
             defaultnotFoundText: ['无匹配', '无匹配', '无匹配', '无匹配'],
+
             cloneValue: []
+
         };
     },
     props: {
@@ -183,7 +190,11 @@ export default {
         disabled: {
             type: [Boolean, Array, Number],
             default: false
-        }
+        },
+        test: {
+            type: String,
+            default: 'default'
+        },
     },
     computed: {
         gutterNum () {
@@ -245,6 +256,20 @@ export default {
                     }
                 }
             }
+
+            if( this.value[0] == 'service_level'){
+                for( let ArrayItem of this.FirstLevel_Array) {
+
+                    if (ArrayItem.obj_name === newValue) {
+
+                        let vTempArray = [];
+                        vTempArray.push(ArrayItem);
+                        this.$emit('input_from_select', vTempArray);
+
+                        break
+                    }
+                }
+            }
         },
 
         SecondLevel_Value (newValue){
@@ -259,7 +284,8 @@ export default {
 
             if( this.value[0] == 'service_type' ){
                 if ( newValue ){
-                    this.ButtonFlag = false;
+                    this.Button1Flag = false;
+                    this.Button2Flag = false;
                 }
             }
 
@@ -278,22 +304,34 @@ export default {
     methods: {
         init () {
 
-            console.log( "AAA:"+this.value[0]);
-            console.log( "BBB:"+this.value[1]);
-            console.log( "CCC:"+this.level);
-            console.log( "DDD:"+this.size);
+            this.FirstLevel_Array = [];
+            this.FirstLevel_Value = '';
+            // console.log( "AAA:"+this.value[0]);
+            // console.log( "BBB:"+this.value[1]);
+            // console.log( "CCC:"+this.level);
+            // console.log( "DDD:"+this.size);
 
             if( this.value[0] == 'system'){
                 this.FindLevel = this.level;
-                this.ButtonFlag = false;
+                this.Button1Flag = false;
+                this.Button1Flag = false;
                 this.columns_def = columns_format_1;
                 this.TableFlag = true
             }
 
             if( this.value[0] == 'service_type'){
                 this.FindLevel = 0;
-                this.ButtonFlag = true;
+                this.Button1Flag = true;
+                this.Button2Flag = true;
                 this.columns_def = columns_format_2;
+                this.TableFlag = true
+            }
+
+            if( this.value[0] == 'service_level'){
+                this.FindLevel = 0;
+                this.Button1Flag = true;
+                this.Button2Flag = false;
+                this.columns_def = columns_format_4;
                 this.TableFlag = true
             }
 
@@ -305,9 +343,7 @@ export default {
 
             httpinstance( config_axios )
                 .then((res) => {
-
                     if (res.status === 200) {
-
                         this.GetJsonStr = res.data;
                         this.FirstLevel_Array = this.GetJsonStr['LEVEL_1'];
 
@@ -321,17 +357,22 @@ export default {
                                 TempArray['app_ename'] =  ArrayItem.obj_name;
                                 this.SecondLevel_Array.push(TempArray);
                             }
-
                         }
 
-                        if( this.value[0] == 'service_type') {
+                        if( this.value[0] == 'service_type' || this.value[0] == 'service_level') {
                             this.FindLevel = 1;
                         }
                     }
                 })
-                .catch(function(err) {
+                .catch( (err) => {
                     console.log(err); // 从数据库获取数据出现问题
-                });
+                    this.$emit('show_from_background', 'error', err);
+                })
+
+        },
+
+        returnmsg(vMsg){
+
         },
 
         show (level) {
@@ -342,6 +383,51 @@ export default {
         showtable () {
 
             return this.TableFlag ;
+        },
+
+        InsertItem(){
+
+            let TempItem = {};
+
+            if( this.value[0] == 'system'){
+
+
+            }
+
+            if( this.value[0] == 'service_type'){
+
+                for( let ArrayItem of this.SecondLevel_Array){
+                    if( ArrayItem.obj_name === this.SecondLevel_Value ){
+                        TempItem['service_type'] = ArrayItem.obj_id;
+                        break
+                    }
+                }
+
+                TempItem['service_id'] = 'AUTO';
+                TempItem['service_name'] = 'none';
+                TempItem['service_desc'] = 'none';
+                TempItem['service_url'] = 'none';
+                TempItem['service_func'] = 'none';
+                TempItem['service_owner'] = 'AUTO';
+                TempItem['service_date'] = 'AUTO';
+                TempItem['service_status'] = '0';
+            }
+
+            if( this.value[0] == 'service_level'){
+
+                TempItem['obj_id'] = 'AUTO';
+                TempItem['obj_name'] = 'none';
+                TempItem['type_desc'] = 'none';
+                TempItem['type_level'] = '1';
+                TempItem['type_uplevel'] = '10000000';
+                TempItem['type_date'] = 'AUTO';
+                TempItem['type_status'] = '0';
+            }
+
+            this.AppLogical_Array = [];
+            this.AppLogical_Array.push( TempItem );
+
+            this.$emit('input_from_select', this.AppLogical_Array);
         },
 
         handleSearchItem(){
@@ -384,11 +470,12 @@ export default {
                         this.GetJsonStr = res.data;
                         this.AppLogical_Array = this.GetJsonStr['RowsArray'] ;
 
-                        this.$emit('input', this.AppLogical_Array);
+                        this.$emit('input_from_select', this.AppLogical_Array);
                     }
                 })
                 .catch(function(err) {
-                    console.log(err); // 从数据库获取数据出现问题
+                    this.$emit('show_from_background', 'error', err);
+                    // console.log(err); // 从数据库获取数据出现问题
                 });
         },
 
@@ -415,6 +502,10 @@ export default {
             // this.$emit('on-change', currentRow);
         },
 
+        UpdateFirstLevel( val ){
+
+            console.log(val);
+        },
 
         /*
         returnRes (level) {

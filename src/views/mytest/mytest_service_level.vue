@@ -10,23 +10,24 @@
                 <Card>
                     <p slot="title">
                         <Icon type="minus-round"></Icon>
-                        API服务信息维护
+                        服务分类信息维护
                     </p>
                     <Row class="area-linkage-page-row3">
-                        <pt-Selector v-on:input_from_select="input_from_select"
+                        <pt-Selector ref="levelselect"
+                                v-on:input_from_select="input_from_select"
                                 v-on:show_from_background="show_from_background"
                                 v-model="resDefault"
-                                level='2'
+                                level='1'
                         />
                     </Row>
                     <Row class="margin-top-10" v-if="show(1)">
                         <div class="edittable-table-height-con">
-                            <pt-Canedittable refs="table2"
+                            <pt-Canedittable ref="table_level1"
                                              v-on:on-change="mychange"
                                              v-on:on-delete="mydelete"
                                              v-model="AppLogical_Array"
                                              :columns-list="columns_def_new"
-                                             userflag='service_info'
+                                             userflag='service_type'
                             >
                             </pt-Canedittable>
                         </div>
@@ -38,44 +39,6 @@
             A success
             <span slot="desc"> {{ BackgroundMessage }} </span>
         </Alert>
-        <Row :gutter="10"  v-if="false">
-            <Col span="17">
-                <Card>
-                    <p slot="title">
-                        <Icon type="minus-round"></Icon>
-                        上层父组件业务操作
-                    </p>
-                    <Row class="area-linkage-page-row1">
-                        <span>插件返回操作目标：</span><br/>
-                        <br>
-                        <!--<i-input v-for="item in showRes"  :values.sync="item.detail">-->
-                        <!--<span slot="prepend">{{item.name+"  "}}</span>-->
-                        <!--</i-input>-->
-
-                        <!--<input v-for="(  item, index) in listDetail" :key="index" v-model="listDetail[index]" />-->
-
-                        <li v-for="(item, index) in listDetail">
-                            <span>{{ listCol[index]}}</span>
-                            <input v-model="listDetail[index]" />
-                        </li>
-
-                        <!--                        <li v-for="(item, index) in listDetail" >
-                                                    <span>{{ listCol[index]}}</span><i-input  :value.sync="item" placeholder="请输入..." style="width: 300px"></i-input>
-                                                </li>-->
-
-
-                        <br>
-                        <br>
-
-                        <!--{{ showRes }}-->
-                        <!--<br>-->
-                        <!--{{listCol}}-->
-                        <!--<br>-->
-                        <!--{{listDetail}}-->
-                    </Row>
-                </Card>
-            </Col>
-        </Row>
     </div>
 </template>
 
@@ -94,7 +57,7 @@
             return {
                 res1: [],
                 //resDefault: { 'OBJ_NAME':'system', 'USER_NAME':'none' } ,
-                resDefault: [ 'service_type', '2' ] ,
+                resDefault: [ 'service_level', '2' ] ,
                 //resDefault: ['', '', '', ''],
                 showRes: [],
                 showFlag:false,
@@ -110,18 +73,20 @@
 
                 ButtonFlag:false,
 
+                TestKey: '',
+
                 myCount: '',
                 myTimer: null,
             };
         },
         methods: {
-
             CreateNewSerType(){
 
             },
 
             getCode(){
-                const TIME_COUNT = 3;
+
+                const TIME_COUNT = 2;
                 if (!this.myTimer) {
                     this.myCount = TIME_COUNT;
                     this.showMsgFlag = true;
@@ -162,7 +127,7 @@
             input_from_select( BackObj ){
 
                 this.AppLogical_Array = BackObj;
-                this.columns_def_new = util.columns_format_3;
+                this.columns_def_new = util.columns_format_5;
 
                 this.showFlag = true;
             },
@@ -192,8 +157,8 @@
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
-                service_params.append('service_id', '10000007');       //你要传给后台的参数值 key/value
-                task_params['service_id'] = idx;
+                service_params.append('service_id', '10000009');       //你要传给后台的参数值 key/value
+                task_params['obj_id'] = idx;
 
                 service_params.append( 'service_args', util.json2Form(task_params) );
 
@@ -207,8 +172,13 @@
                             let vBackData = res.data;
 
                             if( vBackData['Code'] == 'redisplay'){
-                                this.AppLogical_Array = vBackData['RowsArray']
+                                this.AppLogical_Array = vBackData['RowsArray'];
                             }
+
+                            // this.$refs.levelselect.FirstLevel_Array.push(this.AppLogical_Array[0]);
+                            // this.$refs.levelselect.UpdateFirstLevel(this.AppLogical_Array);
+                            //this.$refs.levelselect.UpdateFirstLevel('aaa');
+                            this.$refs.levelselect.init();
 
                             this.BackgroundMessage = '数据库更新操作，成功完成！';
                             this.MessageType = 'success';
@@ -249,7 +219,7 @@
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
-                service_params.append('service_id', '10000006');       //你要传给后台的参数值 key/value
+                service_params.append('service_id', '10000008');       //你要传给后台的参数值 key/value
                 task_params = BackObj[idx];
 
                 service_params.append( 'service_args', util.json2Form(task_params) );
@@ -267,6 +237,8 @@
                                 this.AppLogical_Array = vBackData['RowsArray']
                             }
 
+                            this.$refs.levelselect.init();
+                            
                             this.BackgroundMessage = '数据库更新操作，成功完成！';
                             this.MessageType = 'success';
                             this.getCode();
