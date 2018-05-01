@@ -212,22 +212,21 @@ util.columns_format_5 = [
         key: 'obj_name',
         title: '分类名称',
         align: 'center',
-        width: 100,
+        width: 200,
         editable: true
     },
     {
         key: 'type_desc',
         title: '分类描述',
-        width: 175,
+        width: 200,
         align: 'center',
         editable: true
     },
     {
         key: 'type_level',
         title: '分类级别',
-        width: 150,
+        width: 100,
         align: 'center',
-        editable: true
     },
     {
         key: 'type_uplevel',
@@ -251,9 +250,64 @@ util.columns_format_5 = [
     {
         title: '操作',
         align: 'center',
-        width: 190,
+        width: 350,
         key: 'handle',
-        handle: ['edit', 'delete']
+        handle: ['edit', 'delete', 'search','add' ]
+    }
+];
+
+util.columns_format_6 = [
+    {
+        key: 'obj_id',
+        title: 'ID',
+        align: 'center',
+        width: 100
+    },
+    {
+        key: 'obj_name',
+        title: '分类名称',
+        align: 'center',
+        width: 200,
+        editable: true
+    },
+    {
+        key: 'type_desc',
+        title: '分类描述',
+        width: 200,
+        align: 'center',
+        editable: true
+    },
+    {
+        key: 'type_level',
+        title: '分类级别',
+        width: 100,
+        align: 'center',
+    },
+    {
+        key: 'type_uplevel',
+        title: '所属级别',
+        width: 100,
+        align: 'center'
+    },
+    {
+        key: 'type_date',
+        title: '创建时间',
+        width: 100,
+        align: 'center'
+    },
+    {
+        key: 'type_status',
+        title: '状态',
+        align: 'center',
+        width: 100,
+        editable: true
+    },
+    {
+        title: '操作',
+        align: 'center',
+        width: 250,
+        key: 'handle',
+        handle: ['edit', 'delete' ]
     }
 ];
 

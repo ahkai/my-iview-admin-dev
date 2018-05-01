@@ -10,7 +10,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="minus-round"></Icon>
-                        服务分类信息维护
+                        服务一级分类信息维护
                     </p>
                     <Row class="area-linkage-page-row3">
                         <pt-Selector ref="levelselect"
@@ -25,6 +25,8 @@
                             <pt-Canedittable ref="table_level1"
                                              v-on:on-change="mychange"
                                              v-on:on-delete="mydelete"
+                                             v-on:on-add="myadd"
+                                             v-on:on-search="mysearch"
                                              v-model="AppLogical_Array"
                                              :columns-list="columns_def_new"
                                              userflag='service_type'
@@ -35,8 +37,30 @@
                 </Card>
             </Col>
         </Row>
+        <Row :gutter="10" v-if="show(2)">
+            <Col span="22">
+                <Card>
+                    <p slot="title">
+                        <Icon type="minus-round"></Icon>
+                        服务二级分类信息维护
+                    </p>
+                    <Row class="margin-top-10" v-if="show(2)">
+                        <div class="edittable-table-height-con">
+                            <pt-Canedittable ref="table_level2"
+                                             v-on:on-change="mychange2"
+                                             v-on:on-delete="mydelete2"
+                                             v-model="AppLogical_Array2"
+                                             :columns-list="columns_def_new2"
+                                             userflag='service_type2'
+                            >
+                            </pt-Canedittable>
+                        </div>
+                    </Row>
+                </Card>>
+            </Col>
+        </Row>
         <Alert class="margin-top-10" v-if="showMessage(1)" :type="MessageType" show-icon>
-            A success
+            任务消息：
             <span slot="desc"> {{ BackgroundMessage }} </span>
         </Alert>
     </div>
@@ -48,6 +72,31 @@
     import ptComponents from './pt-components';
     import util from './util/index';
     import axios from 'axios';
+
+    let ip_addr = document.location.hostname;
+
+    let httpinstance = axios.create({
+        baseURL: 'http://192.168.58.11:5000'
+    });
+
+    if ( ip_addr === '192.168.58.11' ){
+        httpinstance = axios.create({
+            baseURL: 'http://192.168.58.11:5000'
+        });
+    }else{
+        httpinstance = axios.create({
+            baseURL: 'http://192.168.232.11:5000'
+        });
+    }
+
+    let config_axios =  {
+        method: 'post',
+        url: '',
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+        },
+        data: []
+    };
 
     Vue.use(ptComponents);
 
@@ -67,6 +116,10 @@
                 AppLogical_Array:[],
                 columns_def_new:[],
 
+                AppLogical_Array2:[],
+                columns_def_new2:[],
+                showtable2flag:false,
+
                 showMsgFlag:false,
                 BackgroundMessage:'',
                 MessageType : '',
@@ -75,8 +128,9 @@
 
                 TestKey: '',
 
-                myCount: '',
-                myTimer: null,
+                myCount: 0,
+                myCount_total:4,
+                myTimer: null
             };
         },
         methods: {
@@ -86,12 +140,17 @@
 
             getCode(){
 
-                const TIME_COUNT = 2;
+                if(this.MessageType === 'error'){
+                    this.myCount_total = 6;
+                }else{
+                    this.myCount_total = 2;
+                }
+
                 if (!this.myTimer) {
-                    this.myCount = TIME_COUNT;
+                    this.myCount = this.myCount_total;
                     this.showMsgFlag = true;
                     this.myTimer = setInterval(() => {
-                        if (this.myCount > 0 && this.myCount <= TIME_COUNT) {
+                        if (this.myCount > 0 && this.myCount <= this.myCount_total) {
                             this.myCount--;
                         } else {
                             this.showMsgFlag = false;
@@ -107,7 +166,17 @@
             },
 
             show(var1){
-                return this.showFlag;
+
+                if( var1 === 1 ){
+                    return this.showFlag;
+                }
+
+                if( var1 === 2 ){
+                    return this.showtable2flag;
+                }
+
+                return false;
+
             },
 
             showMessage(var2){
@@ -130,30 +199,74 @@
                 this.columns_def_new = util.columns_format_5;
 
                 this.showFlag = true;
+
+                this.showtable2flag = false;
+                this.AppLogical_Array2 = [];
+                this.columns_def_new2 = [];
+            },
+
+            myadd( BackObj , idx ){
+
+                let TempItem = {}
+
+                TempItem['obj_id'] = 'AUTO';
+                TempItem['obj_name'] = 'none';
+                TempItem['type_desc'] = 'none';
+                TempItem['type_level'] = '2';
+                TempItem['type_uplevel'] = idx;
+                TempItem['type_date'] = 'AUTO';
+                TempItem['type_status'] = '0';
+
+                this.AppLogical_Array2 = [];
+                this.AppLogical_Array2.push( TempItem );
+                this.columns_def_new2 = util.columns_format_6 ;
+                this.showtable2flag = true;
+
+            },
+
+            mysearch( BackObj , idx ){
+                let service_params = new URLSearchParams();
+                let task_params = {};
+
+                service_params.append('service_id', '10000010');       //你要传给后台的参数值 key/value
+                task_params = BackObj[idx];
+
+                service_params.append( 'service_args', util.json2Form(task_params) );
+
+                config_axios.data = service_params;
+                config_axios.url = '/task';
+
+                httpinstance( config_axios )
+                    .then((res) => {
+                        if (res.status === 200) {
+
+                            let vBackData = res.data;
+
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.getCode();
+                            }else {
+                                this.AppLogical_Array2 = vBackData['RowsArray'];
+                                this.columns_def_new2 = util.columns_format_6;
+                                this.showtable2flag = true;
+
+                                //this.$refs.levelselect.init();
+
+                                this.BackgroundMessage = '数据库查询操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
+                            }
+                        }
+                    })
+                    .catch((err)=> {
+                        this.BackgroundMessage = '数据库查询操作，失败！'+ err;
+                        this.MessageType = 'error';
+                        this.getCode();
+                    });
             },
 
             mydelete( BackObj , idx ){
-                let ip_addr = document.location.hostname;
-
-                if ( ip_addr == '192.168.58.11' ){
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.58.11:5000'
-                    });
-                }else{
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.232.11:5000'
-                    });
-                }
-
-                let config_axios =  {
-                    method: 'post',
-                    url: '',
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded'
-                    },
-                    data: [],
-                };
-
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -171,22 +284,29 @@
 
                             let vBackData = res.data;
 
-                            if( vBackData['Code'] == 'redisplay'){
-                                this.AppLogical_Array = vBackData['RowsArray'];
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.$refs.levelselect.init();
+                                this.getCode();
+                            }else {
+                                if (vBackData['Code'] === 'redisplay') {
+                                    this.AppLogical_Array = vBackData['RowsArray'];
+                                }
+
+                                // this.$refs.levelselect.FirstLevel_Array.push(this.AppLogical_Array[0]);
+                                // this.$refs.levelselect.UpdateFirstLevel(this.AppLogical_Array);
+                                //this.$refs.levelselect.UpdateFirstLevel('aaa');
+                                this.$refs.levelselect.init();
+
+                                this.BackgroundMessage = '数据库更新操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
                             }
-
-                            // this.$refs.levelselect.FirstLevel_Array.push(this.AppLogical_Array[0]);
-                            // this.$refs.levelselect.UpdateFirstLevel(this.AppLogical_Array);
-                            //this.$refs.levelselect.UpdateFirstLevel('aaa');
-                            this.$refs.levelselect.init();
-
-                            this.BackgroundMessage = '数据库更新操作，成功完成！';
-                            this.MessageType = 'success';
-                            this.getCode();
                         }
                     })
-                    .catch(function(err) {
-                        this.BackgroundMessage = '数据库更新操作，失败！';
+                    .catch((err) => {
+                        this.BackgroundMessage = '数据库更新操作，失败！'+ err;
                         this.MessageType = 'error';
                         this.getCode();
                     });
@@ -194,28 +314,6 @@
             },
 
             mychange( BackObj , idx){
-
-                let ip_addr = document.location.hostname;
-
-                if ( ip_addr == '192.168.58.11' ){
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.58.11:5000'
-                    });
-                }else{
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.232.11:5000'
-                    });
-                }
-
-                let config_axios =  {
-                    method: 'post',
-                    url: '',
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded'
-                    },
-                    data: [],
-                };
-
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -233,19 +331,115 @@
 
                             let vBackData = res.data;
 
-                            if( vBackData['Code'] == 'redisplay'){
-                                this.AppLogical_Array = vBackData['RowsArray']
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.$refs.levelselect.init();
+                                this.getCode();
+                            }else{
+                                if( vBackData['Code'] === 'redisplay'){
+                                    this.AppLogical_Array = vBackData['RowsArray']
+                                }
+
+                                this.$refs.levelselect.init();
+
+                                this.BackgroundMessage = '数据库更新操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
+
                             }
 
-                            this.$refs.levelselect.init();
-                            
-                            this.BackgroundMessage = '数据库更新操作，成功完成！';
-                            this.MessageType = 'success';
-                            this.getCode();
                         }
                     })
-                    .catch(function(err) {
-                        this.BackgroundMessage = '数据库更新操作，失败！';
+                    .catch(( err )=> {
+                        this.BackgroundMessage = '数据库更新操作，失败！' + err ;
+                        this.MessageType = 'error';
+                        this.getCode();
+                    });
+            },
+
+            mydelete2( BackObj , idx ){
+                let service_params = new URLSearchParams();
+                let task_params = {};
+
+                service_params.append('service_id', '10000009');       //你要传给后台的参数值 key/value
+                task_params['obj_id'] = idx;
+
+                service_params.append( 'service_args', util.json2Form(task_params) );
+
+                config_axios.data = service_params;
+                config_axios.url = '/task';
+
+                httpinstance( config_axios )
+                    .then((res) => {
+                        if (res.status === 200) {
+
+                            let vBackData = res.data;
+
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.getCode();
+                            }else {
+                                if (vBackData['Code'] === 'redisplay') {
+                                    this.AppLogical_Array2 = vBackData['RowsArray'];
+                                }
+
+                                // this.$refs.levelselect.FirstLevel_Array.push(this.AppLogical_Array[0]);
+                                // this.$refs.levelselect.UpdateFirstLevel(this.AppLogical_Array);
+                                //this.$refs.levelselect.UpdateFirstLevel('aaa');
+
+                                this.BackgroundMessage = '数据库更新操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
+                            }
+                        }
+                    })
+                    .catch((err) => {
+                        this.BackgroundMessage = '数据库更新操作，失败！'+ err;
+                        this.MessageType = 'error';
+                        this.getCode();
+                    });
+
+            },
+
+            mychange2( BackObj , idx ){
+                let service_params = new URLSearchParams();
+                let task_params = {};
+
+                service_params.append('service_id', '10000008');       //你要传给后台的参数值 key/value
+                task_params = BackObj[idx];
+
+                service_params.append( 'service_args', util.json2Form(task_params) );
+
+                config_axios.data = service_params;
+                config_axios.url = '/task';
+
+                httpinstance( config_axios )
+                    .then((res) => {
+                        if (res.status === 200) {
+
+                            let vBackData = res.data;
+
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.getCode();
+                            }else{
+                                if( vBackData['Code'] === 'redisplay'){
+                                    this.AppLogical_Array2 = vBackData['RowsArray']
+                                }
+
+                                this.BackgroundMessage = '数据库更新操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
+
+                            }
+
+                        }
+                    })
+                    .catch(( err )=> {
+                        this.BackgroundMessage = '数据库更新操作，失败！' + err ;
                         this.MessageType = 'error';
                         this.getCode();
                     });

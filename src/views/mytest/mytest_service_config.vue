@@ -35,7 +35,7 @@
             </Col>
         </Row>
         <Alert class="margin-top-10" v-if="showMessage(1)" :type="MessageType" show-icon>
-            A success
+            任务消息：
             <span slot="desc"> {{ BackgroundMessage }} </span>
         </Alert>
         <Row :gutter="10"  v-if="false">
@@ -88,6 +88,29 @@
 
     Vue.use(ptComponents);
 
+    let httpinstance = '';
+
+    let ip_addr = document.location.hostname;
+
+    if ( ip_addr === '192.168.58.11' ){
+        httpinstance = axios.create({
+            baseURL: 'http://192.168.58.11:5000'
+        });
+    }else{
+        httpinstance = axios.create({
+            baseURL: 'http://192.168.232.11:5000'
+        });
+    }
+
+    let config_axios =  {
+        method: 'post',
+        url: '',
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+        },
+        data: []
+    };
+
     export default {
 
         data () {
@@ -121,12 +144,18 @@
             },
 
             getCode(){
-                const TIME_COUNT = 3;
+
+                if(this.MessageType === 'error'){
+                    this.myCount_total = 6;
+                }else{
+                    this.myCount_total = 2;
+                }
+
                 if (!this.myTimer) {
-                    this.myCount = TIME_COUNT;
+                    this.myCount = this.myCount_total;
                     this.showMsgFlag = true;
                     this.myTimer = setInterval(() => {
-                        if (this.myCount > 0 && this.myCount <= TIME_COUNT) {
+                        if (this.myCount > 0 && this.myCount <= this.myCount_total) {
                             this.myCount--;
                         } else {
                             this.showMsgFlag = false;
@@ -168,27 +197,6 @@
             },
 
             mydelete( BackObj , idx ){
-                let ip_addr = document.location.hostname;
-
-                if ( ip_addr == '192.168.58.11' ){
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.58.11:5000'
-                    });
-                }else{
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.232.11:5000'
-                    });
-                }
-
-                let config_axios =  {
-                    method: 'post',
-                    url: '',
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded'
-                    },
-                    data: [],
-                };
-
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -206,17 +214,23 @@
 
                             let vBackData = res.data;
 
-                            if( vBackData['Code'] == 'redisplay'){
-                                this.AppLogical_Array = vBackData['RowsArray']
-                            }
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.getCode();
+                            }else {
+                                if (vBackData['Code'] === 'redisplay') {
+                                    this.AppLogical_Array = vBackData['RowsArray']
+                                }
 
-                            this.BackgroundMessage = '数据库更新操作，成功完成！';
-                            this.MessageType = 'success';
-                            this.getCode();
+                                this.BackgroundMessage = '数据库更新操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
+                            }
                         }
                     })
-                    .catch(function(err) {
-                        this.BackgroundMessage = '数据库更新操作，失败！';
+                    .catch((err)=> {
+                        this.BackgroundMessage = '数据库更新操作，失败！'+err;
                         this.MessageType = 'error';
                         this.getCode();
                     });
@@ -224,28 +238,6 @@
             },
 
             mychange( BackObj , idx){
-
-                let ip_addr = document.location.hostname;
-
-                if ( ip_addr == '192.168.58.11' ){
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.58.11:5000'
-                    });
-                }else{
-                    var httpinstance = axios.create({
-                        baseURL: 'http://192.168.232.11:5000'
-                    });
-                }
-
-                let config_axios =  {
-                    method: 'post',
-                    url: '',
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded'
-                    },
-                    data: [],
-                };
-
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -263,17 +255,23 @@
 
                             let vBackData = res.data;
 
-                            if( vBackData['Code'] == 'redisplay'){
-                                this.AppLogical_Array = vBackData['RowsArray']
-                            }
+                            if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                                this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                                this.MessageType = 'error';
+                                this.getCode();
+                            }else {
+                                if (vBackData['Code'] === 'redisplay') {
+                                    this.AppLogical_Array = vBackData['RowsArray']
+                                }
 
-                            this.BackgroundMessage = '数据库更新操作，成功完成！';
-                            this.MessageType = 'success';
-                            this.getCode();
+                                this.BackgroundMessage = '数据库更新操作，成功完成！';
+                                this.MessageType = 'success';
+                                this.getCode();
+                            }
                         }
                     })
-                    .catch(function(err) {
-                        this.BackgroundMessage = '数据库更新操作，失败！';
+                    .catch((err) => {
+                        this.BackgroundMessage = '数据库更新操作，失败！' + err;
                         this.MessageType = 'error';
                         this.getCode();
                     });

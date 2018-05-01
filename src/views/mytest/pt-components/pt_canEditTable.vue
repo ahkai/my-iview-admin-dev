@@ -54,11 +54,15 @@ const deleteButton = (vm, h, currentRow, index) => {
         on: {
             'on-ok': () => {
                 let service_id = '';
-                if( vm.userflag == 'service_info'){
+                if( vm.userflag === 'service_info'){
                     service_id = vm.thisTableData[index].service_id;
                 }
 
-                if( vm.userflag == 'service_type'){
+                if( vm.userflag === 'service_type'){
+                    service_id = vm.thisTableData[index].obj_id;
+                }
+
+                if( vm.userflag === 'service_type2'){
                     service_id = vm.thisTableData[index].obj_id;
                 }
 
@@ -80,6 +84,69 @@ const deleteButton = (vm, h, currentRow, index) => {
         }, '删除')
     ]);
 };
+
+const searchButton = (vm, h, currentRow, index) => {
+    return h('Button', {
+        props: {
+            type: 'info',
+            // loading: currentRow.saving
+        },
+        style: {
+            margin: '0 5px'
+        },
+        on: {
+            'click': () => {
+                let service_id = '';
+                if( vm.userflag === 'service_info'){
+                    service_id = vm.thisTableData[index].service_id;
+                }
+
+                if( vm.userflag === 'service_type'){
+                    service_id = vm.thisTableData[index].obj_id;
+                }
+
+                if( vm.userflag === 'service_type2'){
+                    service_id = vm.thisTableData[index].obj_id;
+                }
+
+                // vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                vm.$emit('on-search', vm.handleBackdata(vm.thisTableData), index);
+            }
+        }
+    }, "查询");
+};
+
+const addButton = (vm, h, currentRow, index) => {
+    return h('Button', {
+        props: {
+            type: 'success',
+            // loading: currentRow.saving
+        },
+        style: {
+            margin: '0 5px'
+        },
+        on: {
+            'click': () => {
+                let service_id = '';
+                if( vm.userflag === 'service_info'){
+                    service_id = vm.thisTableData[index].service_id;
+                }
+
+                if( vm.userflag === 'service_type'){
+                    service_id = vm.thisTableData[index].obj_id;
+                }
+
+                if( vm.userflag === 'service_type2'){
+                    service_id = vm.thisTableData[index].obj_id;
+                }
+
+                // vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                vm.$emit('on-add', vm.handleBackdata(vm.thisTableData), service_id);
+            }
+        }
+    }, "新增");
+};
+
 const incellEditBtn = (vm, h, param) => {
     if (vm.hoverShow) {
         return h('div', {
@@ -264,12 +331,13 @@ export default {
                         let children = [];
                         item.handle.forEach(item => {
                             if (item === 'edit') {
-
-                                // console.log('watch edit: rowdata:['+currentRowData.editting+'] h:['+h +'] param.index:['+param.index+']');
-
                                 children.push(editButton(this, h, currentRowData, param.index));
                             } else if (item === 'delete') {
                                 children.push(deleteButton(this, h, currentRowData, param.index));
+                            }else if (item === 'search') {
+                                children.push(searchButton(this, h, currentRowData, param.index));
+                            }else if (item === 'add') {
+                                children.push(addButton(this, h, currentRowData, param.index));
                             }
                         });
                         return h('div', children);
