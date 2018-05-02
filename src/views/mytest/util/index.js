@@ -153,7 +153,7 @@ util.columns_format_3 = [
         key: 'service_date',
         title: '最后修改',
         align: 'center',
-        width: 150
+        width: 160
     },
     {
         key: 'service_status',

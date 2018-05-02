@@ -115,9 +115,11 @@
 
                 AppLogical_Array:[],
                 columns_def_new:[],
+                AppLogical_Array_bk:[],
 
                 AppLogical_Array2:[],
                 columns_def_new2:[],
+                AppLogical_Array2_bk:[],
                 showtable2flag:false,
 
                 showMsgFlag:false,
@@ -194,7 +196,7 @@
             },
 
             input_from_select( BackObj ){
-
+                this.AppLogical_Array_bk = BackObj;
                 this.AppLogical_Array = BackObj;
                 this.columns_def_new = util.columns_format_5;
 
@@ -247,6 +249,7 @@
                                 this.MessageType = 'error';
                                 this.getCode();
                             }else {
+                                this.AppLogical_Array2_bk = vBackData['RowsArray'];
                                 this.AppLogical_Array2 = vBackData['RowsArray'];
                                 this.columns_def_new2 = util.columns_format_6;
                                 this.showtable2flag = true;
@@ -288,6 +291,13 @@
                                 this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
                                 this.MessageType = 'error';
                                 this.$refs.levelselect.init();
+
+                                this.AppLogical_Array = this.AppLogical_Array_bk;
+
+                                this.AppLogical_Array = this.AppLogical_Array.filter( (item) => {
+                                    return item;
+                                });
+
                                 this.getCode();
                             }else {
                                 if (vBackData['Code'] === 'redisplay') {
@@ -298,7 +308,7 @@
                                 // this.$refs.levelselect.UpdateFirstLevel(this.AppLogical_Array);
                                 //this.$refs.levelselect.UpdateFirstLevel('aaa');
                                 this.$refs.levelselect.init();
-
+                                this.AppLogical_Array_bk = this.AppLogical_Array;
                                 this.BackgroundMessage = '数据库更新操作，成功完成！';
                                 this.MessageType = 'success';
                                 this.getCode();
@@ -308,12 +318,22 @@
                     .catch((err) => {
                         this.BackgroundMessage = '数据库更新操作，失败！'+ err;
                         this.MessageType = 'error';
+
+                        this.AppLogical_Array = this.AppLogical_Array_bk;
+
+                        this.AppLogical_Array = this.AppLogical_Array.filter( (item) => {
+                            return item;
+                        });
+
                         this.getCode();
                     });
 
             },
 
             mychange( BackObj , idx){
+
+                this.AppLogical_Array_bk = BackObj;
+
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -379,6 +399,13 @@
                             if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
                                 this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
                                 this.MessageType = 'error';
+
+                                this.AppLogical_Array2 = this.AppLogical_Array2_bk;
+
+                                this.AppLogical_Array2 = this.AppLogical_Array2.filter( (item) => {
+                                    return item;
+                                });
+
                                 this.getCode();
                             }else {
                                 if (vBackData['Code'] === 'redisplay') {
@@ -389,6 +416,7 @@
                                 // this.$refs.levelselect.UpdateFirstLevel(this.AppLogical_Array);
                                 //this.$refs.levelselect.UpdateFirstLevel('aaa');
 
+                                this.AppLogical_Array2_bk = this.AppLogical_Array2;
                                 this.BackgroundMessage = '数据库更新操作，成功完成！';
                                 this.MessageType = 'success';
                                 this.getCode();
@@ -398,12 +426,22 @@
                     .catch((err) => {
                         this.BackgroundMessage = '数据库更新操作，失败！'+ err;
                         this.MessageType = 'error';
+
+                        this.AppLogical_Array2 = this.AppLogical_Array2_bk;
+
+                        this.AppLogical_Array2 = this.AppLogical_Array2.filter( (item) => {
+                            return item;
+                        });
+
                         this.getCode();
                     });
 
             },
 
             mychange2( BackObj , idx ){
+
+                this.AppLogical_Array2_bk = BackObj;
+
                 let service_params = new URLSearchParams();
                 let task_params = {};
 

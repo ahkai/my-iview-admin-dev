@@ -126,6 +126,8 @@
 
                 AppLogical_Array:[],
                 columns_def_new:[],
+                AppLogical_Array_bk:[],
+
 
                 showMsgFlag:false,
                 BackgroundMessage:'',
@@ -190,10 +192,16 @@
 
             input_from_select( BackObj ){
 
+                this.AppLogical_Array_bk = BackObj;
                 this.AppLogical_Array = BackObj;
+
                 this.columns_def_new = util.columns_format_3;
 
                 this.showFlag = true;
+
+                this.BackgroundMessage = '数据库查询操作，成功完成！';
+                this.MessageType = 'success';
+                this.getCode();
             },
 
             mydelete( BackObj , idx ){
@@ -217,12 +225,19 @@
                             if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
                                 this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
                                 this.MessageType = 'error';
+                                this.AppLogical_Array = this.AppLogical_Array_bk;
+
+                                this.AppLogical_Array = this.AppLogical_Array.filter( (item) => {
+                                    return item;
+                                });
+
                                 this.getCode();
                             }else {
                                 if (vBackData['Code'] === 'redisplay') {
                                     this.AppLogical_Array = vBackData['RowsArray']
                                 }
 
+                                this.AppLogical_Array_bk = this.AppLogical_Array;
                                 this.BackgroundMessage = '数据库更新操作，成功完成！';
                                 this.MessageType = 'success';
                                 this.getCode();
@@ -232,12 +247,22 @@
                     .catch((err)=> {
                         this.BackgroundMessage = '数据库更新操作，失败！'+err;
                         this.MessageType = 'error';
+                        this.AppLogical_Array = this.AppLogical_Array_bk ;
+
+                        //数组赋值操作，并不能出发vue发现，数组内容变更，必须使用变异方法 (mutation method)
+                        // 或有非变异 (non-mutating method) 方法，例如：filter(), concat() 和 slice()
+                        this.AppLogical_Array = this.AppLogical_Array.filter( (item) => {
+                            return item;
+                        });
                         this.getCode();
                     });
 
             },
 
             mychange( BackObj , idx){
+
+                this.AppLogical_Array_bk = BackObj;
+
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -302,6 +327,12 @@
                 //     }
                 //
                 // }
+            },
+
+            AppLogical_Array( val){
+
+                let a = 1;
+
             }
         }
     };
