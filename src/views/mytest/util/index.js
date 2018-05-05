@@ -278,6 +278,13 @@ util.columns_format_6 = [
         editable: true
     },
     {
+        key: 'type_baseurl',
+        title: '根URL',
+        width: 200,
+        align: 'center',
+        editable: true
+    },
+    {
         key: 'type_level',
         title: '分类级别',
         width: 100,
