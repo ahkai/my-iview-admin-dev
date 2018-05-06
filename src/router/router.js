@@ -225,7 +225,7 @@ export const appRouter = [
     {
         path: '/mytest',
         icon: 'android-checkbox',
-        title: '我的测试页',
+        title: '平台网关管理',
         name: 'My Founction',
         component: Main,
         children: [
