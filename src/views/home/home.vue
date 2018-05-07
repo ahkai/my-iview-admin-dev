@@ -142,7 +142,7 @@
                 <Card>
                     <p slot="title" class="card-title">
                         <Icon type="android-map"></Icon>
-                        本日累计微服务访问TOP10统计
+                        当日累计微服务访问TOP10统计
                     </p>
                     <div class="data-source-row">
                         <visite-volume></visite-volume>
@@ -153,7 +153,7 @@
                 <Card>
                     <p slot="title" class="card-title">
                         <Icon type="ios-pulse-strong"></Icon>
-                        数据来源统计
+                        当日微服务二级分类项占比
                     </p>
                     <div class="data-source-row">
                         <data-source-pie></data-source-pie>

@@ -211,7 +211,7 @@ export default {
 
         this.myTimer = setInterval(() => {
             this.init();
-        },5000);
+        },6000);
 
     },
     watch :{
