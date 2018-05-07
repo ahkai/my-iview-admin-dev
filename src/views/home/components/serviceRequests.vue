@@ -40,7 +40,7 @@ export default {
     name: 'serviceRequests',
     data () {
         return {
-            option:{},
+            myoption:{},
             mytooltip: {
                 trigger: 'axis',
                 axisPointer: {
@@ -90,71 +90,13 @@ export default {
                        ],
             mycolortest0: '#600000',
 
+            myTimer:'',
             BackgroundMessage:'',
             MessageType: 'error'
         };
     },
 
     methods: {
-
-        testdata(){
-            this.myxAxis=  [
-                {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-                }
-            ];
-
-            this.myseries=[
-                {
-                    name: '运营商/网络服务',
-                    type: this.myseriestype,
-                    stack: '总量',
-                    areaStyle: {normal: {
-                            color: this.mycolordef[0]
-                        }},
-                    data: [120, 132, 101, 134, 90, 230, 210]
-                },
-                {
-                    name: '银行/证券',
-                    type: this.myseriestype,
-                    stack: '总量',
-                    areaStyle: {normal: {
-                            color: this.mycolordef[1]
-                        }},
-                    data: [257, 358, 278, 234, 290, 330, 310]
-                },
-                {
-                    name: '游戏/视频',
-                    type: this.myseriestype,
-                    stack: '总量',
-                    areaStyle: {normal: {
-                            color: this.mycolordef[2]
-                        }},
-                    data: [379, 268, 354, 269, 310, 478, 358]
-                },
-                {
-                    name: '餐饮/外卖',
-                    type: this.myseriestype,
-                    stack: '总量',
-                    areaStyle: {normal: {
-                            color: this.mycolordef[3]
-                        }},
-                    data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: '快递/电商',
-                    type: this.myseriestype,
-                    stack: '总量',
-                    label: this.mylabel,
-                    areaStyle: {normal: {
-                            color: this.mycolordef[4]
-                        }},
-                    data: [820, 645, 546, 745, 872, 624, 258]
-                }
-            ];
-        },
 
         getCode(){
 
@@ -180,8 +122,11 @@ export default {
         },
 
         mygetdata(){
+
+            let tempoption = {};
             let service_params = new URLSearchParams();
             let task_params = {};
+            this.myseries = [];
 
             service_params.append('service_id', '10000011');       //你要传给后台的参数值 key/value
             task_params = 'none';
@@ -206,25 +151,19 @@ export default {
 
                             this.myxAxis[0]['data'] = vBackData['TimeLine'];
 
-                            for(  var tempitem in vTimeLine ){
+                            for(  let tempitem in vTimeLine ){
 
-                                let vTempobj = {}
-
-                                vTempobj['stack'] = '总量';
-                                vTempobj['type'] = this.myseriestype;
-                                vTempobj['areaStyle'] = this.myareaStyle;
-                                vTempobj['areaStyle']['normal']['color'] = this.mycolordef[tempitem];
-                                vTempobj['data'] = vTimeLine[tempitem]['data'];
-                                vTempobj['name'] = vTimeLine[tempitem]['name'];
+                                vTimeLine[tempitem]['stack'] = '总量';
+                                vTimeLine[tempitem]['type'] = this.myseriestype;
+                                vTimeLine[tempitem]['areaStyle'] = this.myareaStyle;
+                                vTimeLine[tempitem]['areaStyle']['normal']['color'] = this.mycolordef[tempitem];
 
                                 if( tempitem == (vTimeLine.length - 1) ){
-                                    vTempobj['label'] = this.mylabel;
+                                    vTimeLine[tempitem]['label'] = this.mylabel;
                                 }
+                            } 
 
-                                this.myseries.push( vTempobj );
-                            }
-
-                            let tempoption = {};
+                            this.myseries = vTimeLine;
 
                             tempoption['tooltip'] = this.mytooltip;
                             tempoption['grid'] = this.mygrid;
@@ -232,15 +171,25 @@ export default {
                             tempoption['series'] = this.myseries;
                             tempoption['xAxis'] = this.myxAxis;
 
-                            this.option = tempoption;
+                            this.myoption = tempoption;
 
                             this.BackgroundMessage = '数据库查询操作，成功完成！';
                             this.MessageType = 'success';
-                            this.getCode();
+
+                            const serviceRequestCharts = echarts.init(document.getElementById('service_request_con'));
+                            serviceRequestCharts.setOption( this.myoption );
+
+                            window.addEventListener('resize', function () {
+                                serviceRequestCharts.resize();
+                            });
+
                         }
                     }
                 })
                 .catch((err)=> {
+                    this.myseries = [];
+                    this.myoption = {};
+                    this.myxAxis[0]['data'] = [];
                     this.BackgroundMessage = '数据库查询操作，失败！'+ err;
                     this.MessageType = 'error';
                     this.getCode();
@@ -249,27 +198,10 @@ export default {
         },
 
         init(){
-
-            this.option = {};
-
-            // // fixed option
-            // this.option['tooltip'] = this.mytooltip;
-            // this.option['grid'] = this.mygrid;
-            // this.option['yAxis'] = this.myyAxis;
-            //
-            // // dynamic option
-            // this.testdata();
-            // this.option['series'] = this.myseries;
-            // this.option['xAxis'] = this.myxAxis;
-
+            this.myseries = [];
+            this.myoption = {};
+            this.myxAxis[0]['data'] = [];
             this.mygetdata();
-
-            const serviceRequestCharts = echarts.init(document.getElementById('service_request_con'));
-            serviceRequestCharts.setOption( this.option );
-
-            window.addEventListener('resize', function () {
-                serviceRequestCharts.resize();
-            });
         }
     },
 
@@ -277,6 +209,22 @@ export default {
 
         this.init();
 
+        this.myTimer = setInterval(() => {
+            this.init();
+        },5000);
+
+    },
+    watch :{
+
+        // option (data) {
+        //     // this.init();
+        // }
+
+    },
+
+    destroyed () {
+        clearInterval(this.myTimer);
     }
+
 };
 </script>

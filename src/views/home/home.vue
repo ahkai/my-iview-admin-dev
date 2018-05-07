@@ -130,7 +130,7 @@
             <Card>
                 <p slot="title" class="card-title">
                     <Icon type="ios-shuffle-strong"></Icon>
-                    上周每日服务调用量
+                    当前网关服务调用量
                 </p>
                 <div class="line-chart-con">
                     <service-requests></service-requests>
@@ -142,7 +142,7 @@
                 <Card>
                     <p slot="title" class="card-title">
                         <Icon type="android-map"></Icon>
-                        上周每日来访量统计
+                        本日累计微服务访问TOP10统计
                     </p>
                     <div class="data-source-row">
                         <visite-volume></visite-volume>
