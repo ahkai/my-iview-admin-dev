@@ -21,7 +21,7 @@
                     </Row>
                     <Row class="margin-top-10" v-if="show(1)">
                         <div class="edittable-table-height-con">
-                            <pt-Canedittable refs="table2"
+                            <pt-Canedittable ref="table2"
                                              v-on:on-change="mychange"
                                              v-on:on-delete="mydelete"
                                              v-model="AppLogical_Array"

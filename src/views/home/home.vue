@@ -4,128 +4,6 @@
 </style>
 <template>
     <div class="home-main">
-        <!--<Row :gutter="10">-->
-            <!--<Col :md="24" :lg="8">-->
-                <!--<Row class-name="home-page-row1" :gutter="10">-->
-                    <!--<Col :md="12" :lg="24" :style="{marginBottom: '10px'}">-->
-                        <!--<Card>-->
-                            <!--<Row type="flex" class="user-infor">-->
-                                <!--<Col span="8">-->
-                                    <!--<Row class-name="made-child-con-middle" type="flex" align="middle">-->
-                                        <!--<img class="avator-img" :src="avatorPath" />-->
-                                    <!--</Row>-->
-                                <!--</Col>-->
-                                <!--<Col span="16" style="padding-left:6px;">-->
-                                    <!--<Row class-name="made-child-con-middle" type="flex" align="middle">-->
-                                        <!--<div>-->
-                                            <!--<b class="card-user-infor-name">Admin</b>-->
-                                            <!--<p>super admin</p>-->
-                                        <!--</div>-->
-                                    <!--</Row>-->
-                                <!--</Col>-->
-                            <!--</Row>-->
-                            <!--<div class="line-gray"></div>-->
-                            <!--<Row class="margin-top-8">-->
-                                <!--<Col span="8"><p class="notwrap">上次登录时间:</p></Col>-->
-                                <!--<Col span="16" class="padding-left-8">2017.09.12-13:32:20</Col>-->
-                            <!--</Row>-->
-                            <!--<Row class="margin-top-8">-->
-                                <!--<Col span="8"><p class="notwrap">上次登录地点:</p></Col>-->
-                                <!--<Col span="16" class="padding-left-8">北京</Col>-->
-                            <!--</Row>-->
-                        <!--</Card>-->
-                    <!--</Col>-->
-                    <!--<Col :md="12" :lg="24" :style="{marginBottom: '10px'}">-->
-                        <!--<Card>-->
-                            <!--<p slot="title" class="card-title">-->
-                                <!--<Icon type="android-checkbox-outline"></Icon>-->
-                                <!--待办事项-->
-                            <!--</p>-->
-                            <!--<a type="text" slot="extra" @click.prevent="addNewToDoItem">-->
-                                <!--<Icon type="plus-round"></Icon>-->
-                            <!--</a>-->
-                            <!--<Modal-->
-                                <!--v-model="showAddNewTodo"-->
-                                <!--title="添加新的待办事项"-->
-                                <!--@on-ok="addNew"-->
-                                <!--@on-cancel="cancelAdd">-->
-                                <!--<Row type="flex" justify="center">-->
-                                    <!--<Input v-model="newToDoItemValue" icon="compose" placeholder="请输入..." style="width: 300px" />-->
-                                <!--</Row>-->
-                                <!--<Row slot="footer">-->
-                                    <!--<Button type="text" @click="cancelAdd">取消</Button>-->
-                                    <!--<Button type="primary" @click="addNew">确定</Button>-->
-                                <!--</Row>-->
-                            <!--</Modal>-->
-                            <!--<div class="to-do-list-con">-->
-                                <!--<div v-for="(item, index) in toDoList" :key="'todo-item' + (toDoList.length - index)" class="to-do-item">-->
-                                    <!--<to-do-list-item :content="item.title"></to-do-list-item>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</Card>-->
-                    <!--</Col>-->
-                <!--</Row>-->
-            <!--</Col>-->
-            <!--<Col :md="24" :lg="16">-->
-                <!--<Row :gutter="5">-->
-                    <!--<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">-->
-                        <!--<infor-card-->
-                            <!--id-name="user_created_count"-->
-                            <!--:end-val="count.createUser"-->
-                            <!--iconType="android-person-add"-->
-                            <!--color="#2d8cf0"-->
-                            <!--intro-text="今日新增用户"-->
-                        <!--&gt;</infor-card>-->
-                    <!--</Col>-->
-                    <!--<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">-->
-                        <!--<infor-card-->
-                            <!--id-name="visit_count"-->
-                            <!--:end-val="count.visit"-->
-                            <!--iconType="ios-eye"-->
-                            <!--color="#64d572"-->
-                            <!--:iconSize="50"-->
-                            <!--intro-text="今日浏览量"-->
-                        <!--&gt;</infor-card>-->
-                    <!--</Col>-->
-                    <!--<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">-->
-                        <!--<infor-card-->
-                            <!--id-name="collection_count"-->
-                            <!--:end-val="count.collection"-->
-                            <!--iconType="upload"-->
-                            <!--color="#ffd572"-->
-                            <!--intro-text="今日数据采集量"-->
-                        <!--&gt;</infor-card>-->
-                    <!--</Col>-->
-                    <!--<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">-->
-                        <!--<infor-card-->
-                            <!--id-name="transfer_count"-->
-                            <!--:end-val="count.transfer"-->
-                            <!--iconType="shuffle"-->
-                            <!--color="#f25e43"-->
-                            <!--intro-text="今日服务调用量"-->
-                        <!--&gt;</infor-card>-->
-                    <!--</Col>-->
-                <!--</Row>-->
-                <!--<Row>-->
-                    <!--<Card :padding="0">-->
-                        <!--<p slot="title" class="card-title">-->
-                            <!--<Icon type="map"></Icon>-->
-                            <!--今日服务调用地理分布-->
-                        <!--</p>-->
-                        <!--<div class="map-con">-->
-                            <!--<Col span="10">-->
-                                <!--<map-data-table :cityData="cityData" height="281" :style-obj="{margin: '12px 0 0 11px'}"></map-data-table>-->
-                            <!--</Col>-->
-                            <!--<Col span="14" class="map-incon">-->
-                                <!--<Row type="flex" justify="center" align="middle">-->
-                                    <!--<home-map :city-data="cityData"></home-map>-->
-                                <!--</Row>-->
-                            <!--</Col>-->
-                        <!--</div>-->
-                    <!--</Card>-->
-                <!--</Row>-->
-            <!--</Col>-->
-        <!--</Row>-->
         <Row class="margin-top-10">
             <Card>
                 <p slot="title" class="card-title">
@@ -138,7 +16,7 @@
             </Card>
         </Row>
         <Row :gutter="10" class="margin-top-10">
-            <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
                 <Card>
                     <p slot="title" class="card-title">
                         <Icon type="android-map"></Icon>
@@ -149,7 +27,7 @@
                     </div>
                 </Card>
             </Col>
-            <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
                 <Card>
                     <p slot="title" class="card-title">
                         <Icon type="ios-pulse-strong"></Icon>
@@ -160,19 +38,36 @@
                     </div>
                 </Card>
             </Col>
-            <Col :md="24" :lg="8">
-                <Card>
+        </Row>
+        <Row :gutter="10" class="margin-top-10">
+            <Card>
+                <Row>
                     <p slot="title" class="card-title">
                         <Icon type="android-wifi"></Icon>
-                        各类用户服务调用变化统计
+                        网关当前资源使用情况
                     </p>
-                    <div class="data-source-row">
-                        <user-flow></user-flow>
-                    </div>
-                </Card>
-            </Col>
+                </Row>
+                <Row>
+                    <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                        <div >
+                            <user-flow :argseries="myseries" id="data-source-row1" ref="flow1"></user-flow>
+                        </div>
+                    </Col>
+                    <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                        <div >
+                            <user-flow  :argseries="myseries2" id="data-source-row2" ref="flow2"></user-flow>
+                        </div>
+                    </Col>
+                </Row>
+            </Card>
         </Row>
+
+        <Alert class="margin-top-10" v-if="showMessage(1)" :type="MessageType" show-icon>
+            任务消息：
+            <span slot="desc"> {{ BackgroundMessage }} </span>
+        </Alert>
     </div>
+
 </template>
 
 <script>
@@ -186,6 +81,36 @@ import countUp from './components/countUp.vue';
 import inforCard from './components/inforCard.vue';
 import mapDataTable from './components/mapDataTable.vue';
 import toDoListItem from './components/toDoListItem.vue';
+
+import axios from 'axios';
+
+import util from '../mytest/util/index'
+
+let ip_addr = document.location.hostname;
+
+let httpinstance = axios.create({
+    baseURL: 'http://192.168.58.11:5000'
+});
+
+if ( ip_addr === '192.168.58.11' ){
+    httpinstance = axios.create({
+        baseURL: 'http://192.168.58.11:5000'
+    });
+}else{
+    httpinstance = axios.create({
+        baseURL: 'http://192.168.232.11:5000'
+    });
+}
+
+let config_axios =  {
+    method: 'post',
+    url: '',
+    headers: {
+        'Content-type': 'application/x-www-form-urlencoded'
+    },
+    data: []
+};
+
 
 export default {
     name: 'home',
@@ -227,7 +152,16 @@ export default {
             },
             cityData: cityData,
             showAddNewTodo: false,
-            newToDoItemValue: ''
+            newToDoItemValue: '',
+
+            myseries:[],
+            myseries2:[],
+            myTimer:'',
+            myTimer2:'',
+
+            showMsgFlag:false,
+            BackgroundMessage :'',
+            MessageType :''
         };
     },
     computed: {
@@ -255,7 +189,201 @@ export default {
         cancelAdd () {
             this.showAddNewTodo = false;
             this.newToDoItemValue = '';
+        },
+
+        showMessage(var2){
+            return this.showMsgFlag;
+        },
+
+        getCode(){
+            if(this.MessageType === 'error'){
+                this.myCount_total = 6;
+            }else{
+                this.myCount_total = 2;
+            }
+
+            if (!this.myTimer) {
+                this.myCount = this.myCount_total;
+                this.showMsgFlag = true;
+                this.myTimer = setInterval(() => {
+                    if (this.myCount > 0 && this.myCount <= this.myCount_total) {
+                        this.myCount--;
+                    } else {
+                        this.showMsgFlag = false;
+                        clearInterval(this.myTimer);
+                        this.myTimer = null;
+                    }
+                }, 1000)
+            }
+        },
+
+        mygetdata(){
+
+            this.myseries = [];
+            this.myseries2 = [];
+
+            let service_params = new URLSearchParams();
+            let task_params = {};
+
+            service_params.append('service_id', '10000014');       //你要传给后台的参数值 key/value
+            task_params = 'none';
+
+            service_params.append( 'service_args', util.json2Form(task_params) );
+
+            config_axios.data = service_params;
+            config_axios.url = '/task';
+
+            httpinstance( config_axios )
+                .then((res) => {
+                    if (res.status === 200) {
+
+                        let vBackData = res.data;
+
+                        if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
+                            this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
+                            this.MessageType = 'error';
+                            this.getCode();
+                        }else {
+                            let vTimeLine = vBackData['TaskArgs'];
+                            let tempseries = [];
+                            let tempobj = {
+                                name: '',
+                                type: 'gauge',
+                                min: 0,
+                                max: 100,
+                                detail: {
+                                    formatter: '{value}%',
+                                    fontSize: 18,
+                                    offsetCenter: [0, '50px']
+                                },
+                                data: [{value: 0, name: ''}],
+                                center: ['25%', '50%'],
+                                radius: '70%',
+                                title: {
+                                    offsetCenter: [0, '80px']
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        // color: [],
+                                        width: 20
+                                    }
+                                },
+                                splitLine: {
+                                    length: 20
+                                }
+                            };
+                            let tempobj2 = {
+                                name: '',
+                                type: 'gauge',
+                                min: 0,
+                                max: 100,
+                                detail: {
+                                    formatter: '{value}%',
+                                    fontSize: 18,
+                                    offsetCenter: [0, '50px']
+                                },
+                                data: [{value: 0, name: ''}],
+                                center: ['25%', '50%'],
+                                radius: '70%',
+                                title: {
+                                    offsetCenter: [0, '80px']
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        // color: [],
+                                        width: 20
+                                    }
+                                },
+                                splitLine: {
+                                    length: 20
+                                }
+                            };
+                            let tempobj3 = {
+                                name: '',
+                                type: 'gauge',
+                                min: 0,
+                                max: 100,
+                                detail: {
+                                    formatter: '{value}%',
+                                    fontSize: 18,
+                                    offsetCenter: [0, '50px']
+                                },
+                                data: [{value: 0, name: ''}],
+                                center: ['25%', '50%'],
+                                radius: '70%',
+                                title: {
+                                    offsetCenter: [0, '80px']
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        // color: [],
+                                        width: 20
+                                    }
+                                },
+                                splitLine: {
+                                    length: 20
+                                }
+                            };
+
+                            tempobj.data[0]['value'] = Number(vTimeLine['cpu']).toFixed(2) ;
+                            tempobj.data[0]['name'] = 'CPU使用率';
+                            tempobj['name'] = 'CPU';
+
+                            tempseries.push( tempobj);
+
+                            tempobj2.data[0]['value'] = Number(vTimeLine['mem']).toFixed(2) ;
+                            tempobj2.data[0]['name'] = 'MEM使用率';
+                            tempobj2['name'] = 'MEM';
+
+                            tempseries.push( tempobj2 );
+
+                            this.myseries = tempseries;
+
+                            this.$refs.flow1.flowupdate(tempseries);
+
+                            let tempseries2 = [];
+
+                            tempobj3.data[0]['value'] = Number(vTimeLine['disk']).toFixed(2) ;
+                            tempobj3.data[0]['name'] = 'DISK使用率';
+                            tempobj3['name'] = 'DISK';
+
+                            tempseries2.push( tempobj3 );
+
+                            this.myseries2 = tempseries2;
+
+                            this.$refs.flow2.flowupdate(tempseries2);
+
+                            this.BackgroundMessage = '数据库查询操作，成功完成！';
+                            this.MessageType = 'success';
+
+                            console.log('BBBBBBBBBBBBB');
+
+                        }
+                    }
+                })
+                .catch( (err) => {
+                    this.BackgroundMessage = '数据库查询操作，失败！'+ err;
+                    this.MessageType = 'error';
+                    this.getCode();
+                });
+
+        },
+
+        init(){
+            this.mygetdata();
         }
+    },
+
+    mounted(){
+        this.myTimer2 = setInterval(() => {
+            this.init();
+        },12000);
+    },
+
+    destroyed () {
+        clearInterval(this.myTimer2);
+        clearInterval(this.myTimer);
     }
+
 };
 </script>

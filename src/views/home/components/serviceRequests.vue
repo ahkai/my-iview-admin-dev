@@ -161,7 +161,7 @@ export default {
                                 if( tempitem == (vTimeLine.length - 1) ){
                                     vTimeLine[tempitem]['label'] = this.mylabel;
                                 }
-                            } 
+                            }
 
                             this.myseries = vTimeLine;
 
