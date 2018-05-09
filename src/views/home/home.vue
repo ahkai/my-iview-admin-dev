@@ -40,27 +40,29 @@
             </Col>
         </Row>
         <Row :gutter="10" class="margin-top-10">
-            <Card>
-                <Row>
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                <Card>
                     <p slot="title" class="card-title">
                         <Icon type="android-wifi"></Icon>
-                        网关当前资源使用情况
+                        网关当前CPU、MEM资源使用情况
                     </p>
-                </Row>
-                <Row>
-                    <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
-                        <div >
-                            <user-flow :argseries="myseries" id="data-source-row1" ref="flow1"></user-flow>
-                        </div>
-                    </Col>
-                    <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
-                        <div >
-                            <user-flow  :argseries="myseries2" id="data-source-row2" ref="flow2"></user-flow>
-                        </div>
-                    </Col>
-                </Row>
-            </Card>
-        </Row>
+                    <div  class="data-source-row">
+                        <user-flow :argseries="myseries" id="flow1" ref="flow1"></user-flow>
+                    </div>
+                </Card>
+            </Col>
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                <Card>
+                    <p slot="title" class="card-title">
+                        <Icon type="android-wifi"></Icon>
+                        网关当前DISK、NETWORK资源使用情况
+                    </p>
+                    <div  class="data-source-row">
+                        <user-flow  :argseries="myseries2" id="flow2" ref="flow2"></user-flow>
+                    </div>
+                </Card>
+            </Col>
+         </Row>
 
         <Alert class="margin-top-10" v-if="showMessage(1)" :type="MessageType" show-icon>
             任务消息：
@@ -156,6 +158,7 @@ export default {
 
             myseries:[],
             myseries2:[],
+            myseries3:[],
             myTimer:'',
             myTimer2:'',
 
@@ -221,6 +224,7 @@ export default {
 
             this.myseries = [];
             this.myseries2 = [];
+            this.myseries3 = [];
 
             let service_params = new URLSearchParams();
             let task_params = {};
@@ -244,114 +248,11 @@ export default {
                             this.MessageType = 'error';
                             this.getCode();
                         }else {
-                            let vTimeLine = vBackData['TaskArgs'];
-                            let tempseries = [];
-                            let tempobj = {
-                                name: '',
-                                type: 'gauge',
-                                min: 0,
-                                max: 100,
-                                detail: {
-                                    formatter: '{value}%',
-                                    fontSize: 18,
-                                    offsetCenter: [0, '50px']
-                                },
-                                data: [{value: 0, name: ''}],
-                                center: ['25%', '50%'],
-                                radius: '70%',
-                                title: {
-                                    offsetCenter: [0, '80px']
-                                },
-                                axisLine: {
-                                    lineStyle: {
-                                        // color: [],
-                                        width: 20
-                                    }
-                                },
-                                splitLine: {
-                                    length: 20
-                                }
-                            };
-                            let tempobj2 = {
-                                name: '',
-                                type: 'gauge',
-                                min: 0,
-                                max: 100,
-                                detail: {
-                                    formatter: '{value}%',
-                                    fontSize: 18,
-                                    offsetCenter: [0, '50px']
-                                },
-                                data: [{value: 0, name: ''}],
-                                center: ['25%', '50%'],
-                                radius: '70%',
-                                title: {
-                                    offsetCenter: [0, '80px']
-                                },
-                                axisLine: {
-                                    lineStyle: {
-                                        // color: [],
-                                        width: 20
-                                    }
-                                },
-                                splitLine: {
-                                    length: 20
-                                }
-                            };
-                            let tempobj3 = {
-                                name: '',
-                                type: 'gauge',
-                                min: 0,
-                                max: 100,
-                                detail: {
-                                    formatter: '{value}%',
-                                    fontSize: 18,
-                                    offsetCenter: [0, '50px']
-                                },
-                                data: [{value: 0, name: ''}],
-                                center: ['25%', '50%'],
-                                radius: '70%',
-                                title: {
-                                    offsetCenter: [0, '80px']
-                                },
-                                axisLine: {
-                                    lineStyle: {
-                                        // color: [],
-                                        width: 20
-                                    }
-                                },
-                                splitLine: {
-                                    length: 20
-                                }
-                            };
+                            let vTimeLine = { 'cpu':0, 'mem':0, 'disk':0, 'network':0 };
+                            vTimeLine = vBackData['TaskArgs'];
 
-                            tempobj.data[0]['value'] = Number(vTimeLine['cpu']).toFixed(2) ;
-                            tempobj.data[0]['name'] = 'CPU使用率';
-                            tempobj['name'] = 'CPU';
-
-                            tempseries.push( tempobj);
-
-                            tempobj2.data[0]['value'] = Number(vTimeLine['mem']).toFixed(2) ;
-                            tempobj2.data[0]['name'] = 'MEM使用率';
-                            tempobj2['name'] = 'MEM';
-
-                            tempseries.push( tempobj2 );
-
-                            this.myseries = tempseries;
-
-                            this.$refs.flow1.flowupdate(tempseries);
-
-                            let tempseries2 = [];
-
-                            tempobj3.data[0]['value'] = Number(vTimeLine['disk']).toFixed(2) ;
-                            tempobj3.data[0]['name'] = 'DISK使用率';
-                            tempobj3['name'] = 'DISK';
-
-                            tempseries2.push( tempobj3 );
-
-                            this.myseries2 = tempseries2;
-
-                            this.$refs.flow2.flowupdate(tempseries2);
+                            this.$refs.flow1.flowupdate(vTimeLine);
+                            this.$refs.flow2.flowupdate(vTimeLine);
 
                             this.BackgroundMessage = '数据库查询操作，成功完成！';
                             this.MessageType = 'success';

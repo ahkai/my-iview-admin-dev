@@ -33,7 +33,125 @@ let config_axios =  {
     data: []
 };
 
+const option = {
+    tooltip: {
+        formatter: '{a} <br/>{b} : {c}%'
+    },
+    series: [
+        {
+            name: 'CPU',
+            type: 'gauge',
+            min: 0,
+            max: 100,
+            detail: {
+                formatter: '{value}%',
+                fontSize: 18,
+                offsetCenter: [0, '50px']
+            },
+            data: [{value: 50, name: 'CPU使用量'}],
+            center: ['25%', '50%'],
+            radius: '70%',
+            title: {
+                offsetCenter: [0, '80px']
+            },
+            axisLine: {
+                lineStyle: {
+                    // color: [],
+                    width: 20
+                }
+            },
+            splitLine: {
+                length: 20
+            }
+        },
+        {
+            name: 'MEM',
+            type: 'gauge',
+            min: 0,
+            max: 100,
+            detail: {
+                formatter: '{value}%',
+                fontSize: 18,
+                offsetCenter: [0, '50px']
+            },
+            data: [{value: 50, name: 'MEM使用量'}],
+            center: ['75%', '50%'],
+            radius: '70%',
+            title: {
+                offsetCenter: [0, '80px']
+            },
+            axisLine: {
+                lineStyle: {
+                    // color: [],
+                    width: 20
+                }
+            },
+            splitLine: {
+                length: 20
+            }
+        }
+    ]
+};
 
+const option2 = {
+    tooltip: {
+        formatter: '{a} <br/>{b} : {c}%'
+    },
+    series: [
+        {
+            name: 'CPU',
+            type: 'gauge',
+            min: 0,
+            max: 100,
+            detail: {
+                formatter: '{value}%',
+                fontSize: 18,
+                offsetCenter: [0, '50px']
+            },
+            data: [{value: 50, name: 'CPU使用量'}],
+            center: ['25%', '50%'],
+            radius: '70%',
+            title: {
+                offsetCenter: [0, '80px']
+            },
+            axisLine: {
+                lineStyle: {
+                    // color: [],
+                    width: 20
+                }
+            },
+            splitLine: {
+                length: 20
+            }
+        },
+        {
+            name: 'MEM',
+            type: 'gauge',
+            min: 0,
+            max: 100,
+            detail: {
+                formatter: '{value}%',
+                fontSize: 18,
+                offsetCenter: [0, '50px']
+            },
+            data: [{value: 50, name: 'MEM使用量'}],
+            center: ['75%', '50%'],
+            radius: '70%',
+            title: {
+                offsetCenter: [0, '80px']
+            },
+            axisLine: {
+                lineStyle: {
+                    // color: [],
+                    width: 20
+                }
+            },
+            splitLine: {
+                length: 20
+            }
+        }
+    ]
+};
 
 export default {
     name: 'userFlow',
@@ -52,88 +170,6 @@ export default {
             mytooltip: {
                 formatter: '{a} <br/>{b} : {c}%'
             },
-            myseries:[
-                {
-                    name: 'A',
-                    type: 'gauge',
-                    min: 0,
-                    max: 100,
-                    detail: {
-                        formatter: '{value}%',
-                        fontSize: 18,
-                        offsetCenter: [0, '50px']
-                    },
-                    data: [{value: 50, name: '当前CPU使用'}],
-                    center: ['25%', '50%'],
-                    radius: '70%',
-                    title: {
-                        offsetCenter: [0, '80px']
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            // color: [],
-                            width: 20
-                        }
-                    },
-                    splitLine: {
-                        length: 20
-                    }
-                },
-                {
-                    name: 'B',
-                    type: 'gauge',
-                    min: 0,
-                    max: 100,
-                    detail: {
-                        formatter: '{value}%',
-                        fontSize: 18,
-                        offsetCenter: [0, '50px']
-                    },
-                    data: [{value: 50, name: '当前MEM使用'}],
-                    center: ['75%', '50%'],
-                    radius: '70%',
-                    title: {
-                        offsetCenter: [0, '80px']
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            // color: [],
-                            width: 20
-                        }
-                    },
-                    splitLine: {
-                        length: 20
-                    }
-                }
-            ],
-            myseries2:[
-                {
-                    name: 'C',
-                    type: 'gauge',
-                    min: 0,
-                    max: 100,
-                    detail: {
-                        formatter: '{value}%',
-                        fontSize: 18,
-                        offsetCenter: [0, '50px']
-                    },
-                    data: [{value: 50, name: '当前DISK使用'}],
-                    center: ['75%', '50%'],
-                    radius: '70%',
-                    title: {
-                        offsetCenter: [0, '80px']
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            // color: [],
-                            width: 20
-                        }
-                    },
-                    splitLine: {
-                        length: 20
-                    }
-                }
-            ],
 
             mycolordef:[ '#2d8cf0','#10A6FF', '#0C17A6', '#4608A6', '#398DBF',
                 '#b00000', '#600000', '#263641', '#9534b0', '#1db01d',
@@ -251,20 +287,55 @@ export default {
             this.mygetdata();
         },
 
-        flowupdate( vTempArray){
-            this.myoption['series'] = vTempArray;
-            this.myoption['tooltip'] = this.mytooltip;
+        flowupdate: function (vTempArray) {
 
-            // this.myoption['series'] = this.value;
+            let vTempObj = {'cpu': 0, 'mem': 0, 'disk': 0, 'network': 0};
 
-            let userFlow = echarts.init( document.getElementById( this.id )  );
+            if ( typeof (vTempArray) === 'object' ){
 
-            userFlow.setOption( this.myoption );
+                let objKeys=Object.keys(vTempArray);
+
+                if ( objKeys.length >= 3 ) {
+                    vTempObj = vTempArray;
+                }
+            }
+
+            let userFlow = echarts.init(document.getElementById(this.id));
+
+            if (this.id === 'flow1') {
+                option.name = 'CPU';
+                option.series[0].data[0].name = 'CPU使用率';
+                option.series[0].data[0].value = Number(vTempObj['cpu']).toFixed(2);
+                option.name = 'MEM';
+                option.series[1].data[0].name = 'MEM使用率';
+                option.series[1].data[0].value = Number(vTempObj['mem']).toFixed(2);
+
+                userFlow.setOption(option);
+                window.addEventListener('resize', function () {
+                    userFlow.resize();
+                });
+            }
+
+            if (this.id === 'flow2') {
+                option2.name = 'DISK';
+                option2.series[0].data[0].name = 'DISK使用率';
+                option2.series[0].data[0].value = Number(vTempObj['disk']).toFixed(2);
+                option2.name = 'NETWORK';
+                option2.series[1].data[0].name = 'NETWORK流量';
+                option2.series[1].data[0].value = ((vTempObj['networkin'] + vTempObj['networkout'])/1024).toFixed(2);
+                option2.series[1].max = 100;
+                // option.series[1].detail.formatter = '{value} byte/s';
+                option2.series[1].detail.formatter = '{value} KB/s';
+
+                console.log( vTempObj['networkin'] + vTempObj['networkout'] );
+
+                userFlow.setOption(option2);
+                window.addEventListener('resize', function () {
+                    userFlow.resize();
+                });
+            }
 
 
-            window.addEventListener('resize', function () {
-                userFlow.resize();
-            });
         }
     },
 
