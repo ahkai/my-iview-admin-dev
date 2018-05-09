@@ -228,7 +228,7 @@ export const appRouter = [
         title: '平台网关管理',
         name: 'My Founction',
         component: Main,
-        children: [
+        children: [ 
             { path: 'home', title: 'API网关监控', name: 'home_index', component: () => import('@/views/home/home.vue') },
             { path: 'mytest_select', title: '前端公共组件', name: 'mytest_select', component: () => import('@/views/mytest/mytest_select.vue') },
             { path: 'mytest_service_level', title: '服务分类管理', name: 'mytest_svr_level', component: () => import('@/views/mytest/mytest_service_level.vue') },
