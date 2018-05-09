@@ -1,5 +1,5 @@
 <style lang="less">
-    @import "./home.less";
+    @import "./mytest.less";
     @import "../../styles/common.less";
 </style>
 <template>
@@ -73,20 +73,14 @@
 </template>
 
 <script>
-import cityData from './map-data/get-city-value.js';
-import homeMap from './components/map.vue';
-import dataSourcePie from './components/dataSourcePie.vue';
-import visiteVolume from './components/visiteVolume.vue';
-import serviceRequests from './components/serviceRequests.vue';
-import userFlow from './components/userFlow.vue';
-import countUp from './components/countUp.vue';
-import inforCard from './components/inforCard.vue';
-import mapDataTable from './components/mapDataTable.vue';
-import toDoListItem from './components/toDoListItem.vue';
+import dataSourcePie from './pt-components/dataSourcePie.vue';
+import visiteVolume from './pt-components/visiteVolume.vue';
+import serviceRequests from './pt-components/serviceRequests.vue';
+import userFlow from './pt-components/userFlow.vue';
 
 import axios from 'axios';
 
-import util from '../mytest/util/index'
+import util from './util/index'
 
 let ip_addr = document.location.hostname;
 
@@ -117,15 +111,10 @@ let config_axios =  {
 export default {
     name: 'home',
     components: {
-        homeMap,
         dataSourcePie,
         visiteVolume,
         serviceRequests,
-        userFlow,
-        countUp,
-        inforCard,
-        mapDataTable,
-        toDoListItem
+        userFlow
     },
     data () {
         return {
@@ -152,7 +141,7 @@ export default {
                 collection: 24389305,
                 transfer: 39503498
             },
-            cityData: cityData,
+
             showAddNewTodo: false,
             newToDoItemValue: '',
 

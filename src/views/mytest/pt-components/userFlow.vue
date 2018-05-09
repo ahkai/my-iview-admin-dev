@@ -6,7 +6,7 @@
 import echarts from 'echarts';
 import axios from 'axios';
 
-import util from '../../mytest/util/index'
+import util from '../util/index'
 
 let ip_addr = document.location.hostname;
 
