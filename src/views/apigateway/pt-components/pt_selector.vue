@@ -410,7 +410,7 @@ export default {
                 TempItem['service_func'] = 'none';
                 TempItem['service_owner'] = 'AUTO';
                 TempItem['service_date'] = 'AUTO';
-                TempItem['service_status'] = '0';
+                TempItem['service_status'] = '3';
             }
 
             if( this.value[0] == 'service_level'){

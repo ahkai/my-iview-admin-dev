@@ -159,7 +159,6 @@ util.columns_format_3 = [
         key: 'service_status',
         title: '状态',
         width: 80,
-        editable: true
     },
     {
         title: '操作',
@@ -315,6 +314,63 @@ util.columns_format_6 = [
         width: 250,
         key: 'handle',
         handle: ['edit', 'delete' ]
+    }
+];
+
+util.columns_format_7 = [
+    {
+        key: 'service_id',
+        title: 'ID',
+        align: 'center',
+        width: 100
+    },
+    {
+        key: 'service_name',
+        title: '服务名',
+        width: 175,
+        align: 'center',
+    },
+    {
+        key: 'service_desc',
+        title: '服务描述',
+        width: 150,
+        align: 'center',
+    },
+    {
+        key: 'service_url',
+        title: '内部URL',
+        width: 100,
+        align: 'center',
+    },
+    {
+        key: 'service_func',
+        title: '内部FUNC',
+        width: 100,
+        align: 'center',
+    },
+    {
+        key: 'service_owner',
+        title: '创建人',
+        align: 'center',
+        width: 100
+    },
+    {
+        key: 'service_date',
+        title: '最后修改',
+        align: 'center',
+        width: 160
+    },
+    // {
+    //     key: 'service_status',
+    //     title: '状态',
+    //     width: 80,
+    // },
+    {
+        title: '操作',
+        align: 'center',
+        width: 190,
+        key: 'handle',
+        handle: ['switch']
     }
 ];
 

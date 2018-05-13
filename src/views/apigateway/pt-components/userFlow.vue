@@ -158,7 +158,7 @@ export default {
 
     props: {
         value:Array,
-        argseries: Array,
+        argseries: Object,
         id: String
 
     },
@@ -183,6 +183,8 @@ export default {
             BackgroundMessage:'',
             MessageType: 'error',
 
+            myobject:null,
+
             idname:''
 
         };
@@ -190,168 +192,86 @@ export default {
 
     methods: {
 
-        getCode(){
+        initflowdata(){
+            let vTempObj = {'cpu': 0, 'mem': 0, 'disk': 0, 'networkin': 0, 'networkout': 0};
 
-        },
+            if ( typeof (this.argseries) === 'object' && this.id !== '' ){
 
-        mygetdata(){
+                let objKeys=Object.keys(this.argseries);
 
-            let tempoption = {};
-            this.myoption = {};
-            let service_params = new URLSearchParams();
-            let task_params = {};
+                if ( objKeys.length >= 5 ) {
+                    vTempObj = this.argseries;
 
-            service_params.append('service_id', '10000014');       //你要传给后台的参数值 key/value
-            task_params = 'none';
+                    let userFlow = echarts.init(document.getElementById(this.id));
 
-            service_params.append( 'service_args', util.json2Form(task_params) );
+                    if (this.id === 'flow1') {
+                        option.name = 'CPU';
+                        option.series[0].data[0].name = 'CPU使用率';
+                        option.series[0].data[0].value = Number(vTempObj['cpu']).toFixed(2);
+                        option.name = 'MEM';
+                        option.series[1].data[0].name = 'MEM使用率';
+                        option.series[1].data[0].value = Number(vTempObj['mem']).toFixed(2);
 
-            config_axios.data = service_params;
-            config_axios.url = '/task';
+                        userFlow.setOption(option);
+                        window.addEventListener('resize', function () {
+                            userFlow.resize();
+                        });
 
-            httpinstance( config_axios )
-                .then((res) => {
-                    if (res.status === 200) {
-
-                        let vBackData = res.data;
-
-                        if( vBackData['Code'] === '0' ||  vBackData['error_code'] ){
-                            this.BackgroundMessage = '数据库操作，失败！' +  vBackData['Message'] ;
-                            this.MessageType = 'error';
-                            this.getCode();
-                        }else {
-                            let vTimeLine = vBackData['TaskArgs'];
-
-                            this.myseries[0].data[0]['value'] = Number(vTimeLine['cpu']).toFixed(2) ;
-                            this.myseries[1].data[0]['value'] = Number(vTimeLine['mem']).toFixed(2);
-                            this.myseries2[0].data[0]['value'] = Number(vTimeLine['disk']).toFixed(2);
-
-                            this.myoption['series'] = this.myseries;
-                            this.myoption['tooltip'] = this.mytooltip;
-
-                            this.myoption2['series'] = this.myseries2;
-                            this.myoption2['tooltip'] = this.mytooltip;
-
-                            this.BackgroundMessage = '数据库查询操作，成功完成！';
-                            this.MessageType = 'success';
-
-                            // let userFlow = echarts.init(document.getElementsByName('userflow1'));
-                            // let userFlow2 = echarts.init(document.getElementsByName('userflow2'));
-
-                            let userFlow = echarts.init(document.getElementById('user_flow'));
-                            // let userFlow2 = echarts.init(document.getElementById('user_flow'));
-                            userFlow.setOption( this.myoption );
-                            // userFlow2.setOption( this.myoption2);
-
-                            window.addEventListener('resize', function () {
-                                userFlow.resize();
-                            });
-
-                            // window.addEventListener('resize', function () {
-                            //     userFlow2.resize();
-                            // });
-
-                        }
+                        this.myobject = userFlow;
                     }
-                })
-                .catch((err)=> {
 
-                    this.BackgroundMessage = '数据库查询操作，失败！'+ err;
-                    this.MessageType = 'error';
-                    this.getCode();
-                });
+                    if (this.id === 'flow2') {
+                        option2.name = 'DISK';
+                        option2.series[0].data[0].name = 'DISK使用率';
+                        option2.series[0].data[0].value = Number(vTempObj['disk']).toFixed(2);
+                        option2.name = 'NETWORK';
+                        option2.series[1].data[0].name = 'NETWORK流量';
+                        option2.series[1].data[0].value = ((vTempObj['networkin'] + vTempObj['networkout'])/1024).toFixed(2);
+                        option2.series[1].max = 100;
+                        // option.series[1].detail.formatter = '{value} byte/s';
+                        option2.series[1].detail.formatter = '{value} KB/s';
 
-        },
+                        userFlow.setOption(option2);
+                        window.addEventListener('resize', function () {
+                            userFlow.resize();
+                        });
 
-        getuserflowitem( ){
+                        this.myobject = userFlow;
+                    }
 
-            // let headings = document.getElementsByTagName("user_flow");
-            //
-            // for ( let i = 0; i < headings.length; i++ )  {
-            //     let h = headings[i];
-            //
-            //     if(( i + 1 ) == Number(this.seqid) || (i+1) == headings.length)
-            //         return h;
-            // }
-
-            // let Ul = document.getElementsByClassName( this.seqid );
-            //
-            // return Ul[0];
-
-            return document.getElementById( this.id );
-
-        },
-
-        init(){
-            this.myoption = {};
-            this.mygetdata();
-        },
-
-        flowupdate: function (vTempArray) {
-
-            let vTempObj = {'cpu': 0, 'mem': 0, 'disk': 0, 'network': 0};
-
-            if ( typeof (vTempArray) === 'object' ){
-
-                let objKeys=Object.keys(vTempArray);
-
-                if ( objKeys.length >= 3 ) {
-                    vTempObj = vTempArray;
                 }
             }
-
-            let userFlow = echarts.init(document.getElementById(this.id));
-
-            if (this.id === 'flow1') {
-                option.name = 'CPU';
-                option.series[0].data[0].name = 'CPU使用率';
-                option.series[0].data[0].value = Number(vTempObj['cpu']).toFixed(2);
-                option.name = 'MEM';
-                option.series[1].data[0].name = 'MEM使用率';
-                option.series[1].data[0].value = Number(vTempObj['mem']).toFixed(2);
-
-                userFlow.setOption(option);
-                window.addEventListener('resize', function () {
-                    userFlow.resize();
-                });
-            }
-
-            if (this.id === 'flow2') {
-                option2.name = 'DISK';
-                option2.series[0].data[0].name = 'DISK使用率';
-                option2.series[0].data[0].value = Number(vTempObj['disk']).toFixed(2);
-                option2.name = 'NETWORK';
-                option2.series[1].data[0].name = 'NETWORK流量';
-                option2.series[1].data[0].value = ((vTempObj['networkin'] + vTempObj['networkout'])/1024).toFixed(2);
-                option2.series[1].max = 100;
-                // option.series[1].detail.formatter = '{value} byte/s';
-                option2.series[1].detail.formatter = '{value} KB/s';
-
-                console.log( vTempObj['networkin'] + vTempObj['networkout'] );
-
-                userFlow.setOption(option2);
-                window.addEventListener('resize', function () {
-                    userFlow.resize();
-                });
-            }
-
-
         }
+
+    },
+
+    created(){
+
     },
 
     mounted () {
-
-        // this.init();
-        // this.myTimer = setInterval(() => {
-        //     this.init();
-        // },12000);
-
-        this.flowupdate();
-
+        this.initflowdata();
     },
 
     destroyed () {
-        // clearInterval(this.myTimer);
+        if (!this.myobject) {
+            return
+        }
+        this.myobject.dispose();
+        this.myobject = null;
+    },
+
+    watch: {
+
+        argseries(){
+
+            if(this.argseries !== null){
+                if ( typeof (this.argseries) === 'object' && this.id !== '' ){
+                    this.initflowdata();
+                }
+            }
+        }
     }
+
 };
 </script>

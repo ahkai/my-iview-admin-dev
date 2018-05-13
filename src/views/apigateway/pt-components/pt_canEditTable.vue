@@ -147,6 +147,45 @@ const addButton = (vm, h, currentRow, index) => {
     }, "新增");
 };
 
+const SwitchButton = (vm, h, currentRow, index) => {
+
+    let self = this;
+    const switchList = [
+        {
+            slot: 'open',
+            name: 'ON'
+        },
+        {
+            slot: 'close',
+            name: 'OFF'
+        }
+    ];
+
+    return h('i-switch', {
+        props: {
+            type:'primary',
+            value: ( currentRow.service_status == 2 ) ? true : false,
+            size:'large'
+        },
+        style: {
+            marginRight: '5px'
+        },
+        slots: {
+
+        },
+        on: {
+            'on-change': (value) => {
+
+                vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index , value );
+            }
+        }
+    }, switchList.map(item => {
+        return h('span',{
+            slot:item.slot
+        },item.name)
+    }));
+};
+
 const incellEditBtn = (vm, h, param) => {
     if (vm.hoverShow) {
         return h('div', {
@@ -338,6 +377,8 @@ export default {
                                 children.push(searchButton(this, h, currentRowData, param.index));
                             }else if (item === 'add') {
                                 children.push(addButton(this, h, currentRowData, param.index));
+                            }else if (item === 'switch'){
+                                children.push(SwitchButton(this, h, currentRowData, param.index));
                             }
                         });
                         return h('div', children);

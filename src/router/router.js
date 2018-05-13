@@ -18,7 +18,7 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
-        { path: 'home', title: {i18n: 'home'}, name: 'home', component: () => import('@/views/apigateway/home.vue') },
+        { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/apigateway/gw_welcome.vue') },
     ]
 };
 
@@ -31,7 +31,8 @@ export const appRouter = [
         name: 'My Founction',
         component: Main,
         children: [
-            { path: 'gw_monitor', title: 'API网关监控', name: 'home_index', component: () => import('@/views/apigateway/gw_monitor.vue') },
+            { path: 'gw_monitor', title: 'API网关监控', name: 'gw_monitor', component: () => import('@/views/apigateway/gw_monitor.vue') },
+            { path: 'gw_service_switch', title: '服务状态开关', name: 'gw_service_switch', component: () => import('@/views/apigateway/gw_service_switch.vue') },
             { path: 'gw_select_app', title: '前端公共组件', name: 'gw_select_app', component: () => import('@/views/apigateway/gw_select_app.vue') },
             { path: 'gw_service_level', title: '服务分类管理', name: 'gw_service_level', component: () => import('@/views/apigateway/gw_service_level.vue') },
             { path: 'gw_service_config', title: '服务配置管理', name: 'gw_service_config', component: () => import('@/views/apigateway/gw_service_config.vue') }

@@ -145,11 +145,11 @@
                 showAddNewTodo: false,
                 newToDoItemValue: '',
 
-                myseries:[],
-                myseries2:[],
+                myseries:{},
+                myseries2:{},
                 myseries3:[],
-                myTimer:'',
-                myTimer2:'',
+                myTimer:null,
+                myTimer2:null,
 
                 showMsgFlag:false,
                 BackgroundMessage :'',
@@ -211,10 +211,6 @@
 
             mygetdata(){
 
-                this.myseries = [];
-                this.myseries2 = [];
-                this.myseries3 = [];
-
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -237,16 +233,18 @@
                                 this.MessageType = 'error';
                                 this.getCode();
                             }else {
-                                let vTimeLine = { 'cpu':0, 'mem':0, 'disk':0, 'network':0 };
-                                vTimeLine = vBackData['TaskArgs'];
+                                let vTimeLine = vBackData['TaskArgs'];
 
-                                this.$refs.flow1.flowupdate(vTimeLine);
-                                this.$refs.flow2.flowupdate(vTimeLine);
+                                // this.$refs.flow1.flowupdate(vTimeLine);
+                                // this.$refs.flow2.flowupdate(vTimeLine);
+
+                                this.myseries = vTimeLine;
+                                this.myseries2 = vTimeLine;
 
                                 this.BackgroundMessage = '数据库查询操作，成功完成！';
                                 this.MessageType = 'success';
 
-                                console.log('BBBBBBBBBBBBB');
+                                console.log('Get system info end!');
 
                             }
                         }
@@ -265,14 +263,27 @@
         },
 
         mounted(){
+
+            this.init();
+
             this.myTimer2 = setInterval(() => {
                 this.init();
             },12000);
         },
 
-        destroyed () {
+        beforeDestroy(){
             clearInterval(this.myTimer2);
             clearInterval(this.myTimer);
+
+            console.log('delete timer!')
+        },
+
+        destroyed(){
+
+            clearInterval(this.myTimer2);
+            clearInterval(this.myTimer);
+
+            console.log('delete timer!')
         }
 
     };

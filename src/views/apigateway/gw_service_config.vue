@@ -259,15 +259,15 @@
 
             },
 
-            isInteger( obj ){
+            isInteger: function (obj) {
 
-                if( obj.length > 1 || obj.length == 0 ){
+                if (obj.length > 1 || obj.length === 0) {
                     return false
                 }
 
                 let vtemp = Number(obj);
 
-                if( typeof vtemp != 'number' ){
+                if (typeof vtemp !== 'number') {
                     return false
                 }
 
@@ -285,22 +285,22 @@
                 service_params.append('service_id', '10000006');       //你要传给后台的参数值 key/value
                 task_params = BackObj[idx];
 
-                if( task_params['service_name'] == '' ){
+                if( task_params['service_name'] === '' ){
                     task_params['service_name'] = 'none';
                     this.AppLogical_Array[idx]['service_name'] = 'none';
                 }
 
-                if( task_params['service_desc'] == '' ){
+                if( task_params['service_desc'] === '' ){
                     task_params['service_desc'] = 'none';
                     this.AppLogical_Array[idx]['service_desc'] = 'none';
                 }
 
-                if( task_params['service_url'] == '' ){
+                if( task_params['service_url'] === '' ){
                     task_params['service_url'] = 'none';
                     this.AppLogical_Array[idx]['service_url'] = 'none';
                 }
 
-                if( task_params['service_func'] == '' ){
+                if( task_params['service_func'] === '' ){
                     task_params['service_func'] = 'none';
                     this.AppLogical_Array[idx]['service_func'] = 'none';
                 }
