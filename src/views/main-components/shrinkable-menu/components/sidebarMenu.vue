@@ -42,6 +42,11 @@ export default {
     },
     methods: {
         changeMenu (active) {
+
+            // for ( let tempitem of this.menuList ){
+            //
+            // }
+
             this.$emit('on-change', active);
         },
         itemTitle (item) {

@@ -101,6 +101,10 @@ export default {
 
         mygetdata(){
 
+            if( document.getElementById('visite_volume_con') === null ){
+                return;
+            }
+
             let tempoption = {};
             this.myoption = {};
             let service_params = new URLSearchParams();
@@ -191,7 +195,13 @@ export default {
         this.init();
 
         this.myTimer = setInterval(() => {
-            this.init();
+
+            if( document.getElementById('visite_volume_con') === null ){
+
+            }else{
+                this.init();
+            }
+
         },60000);
     },
 

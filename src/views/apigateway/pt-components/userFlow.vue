@@ -195,6 +195,10 @@ export default {
         initflowdata(){
             let vTempObj = {'cpu': 0, 'mem': 0, 'disk': 0, 'networkin': 0, 'networkout': 0};
 
+            if( document.getElementById(this.id) === null ){
+                return;
+            }
+
             if ( typeof (this.argseries) === 'object' && this.id !== '' ){
 
                 let objKeys=Object.keys(this.argseries);
@@ -254,20 +258,26 @@ export default {
     },
 
     destroyed () {
-        if (!this.myobject) {
-            return
-        }
+        // if ( this.myobject === null ) {
+        //     return
+        // }
         this.myobject.dispose();
         this.myobject = null;
     },
 
     watch: {
 
-        argseries(){
+        argseries() {
 
-            if(this.argseries !== null){
-                if ( typeof (this.argseries) === 'object' && this.id !== '' ){
-                    this.initflowdata();
+            if( document.getElementById(this.id) === null ){
+
+            }else{
+                if (typeof (this.argseries) === 'object') {
+                    if (this.argseries !== null) {
+                        if (typeof (this.argseries) === 'object' && this.id !== '') {
+                            this.initflowdata();
+                        }
+                    }
                 }
             }
         }

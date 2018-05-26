@@ -92,7 +92,7 @@
                                     return item;
                                 });
 
-                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType);
+                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType , 1);
                             }else{
 
                                 let TempObj = vBackData;
@@ -101,7 +101,7 @@
                                 this.BackgroundMessage = '数据库更新操作，成功完成！';
                                 this.MessageType = 'success';
 
-                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType);
+                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType, 1 );
                             }
 
                         }
@@ -115,7 +115,7 @@
                             return item;
                         });
 
-                        this.$emit('childgetcode', this.BackgroundMessage, this.MessageType);
+                        this.$emit('childgetcode', this.BackgroundMessage, this.MessageType, 1);
                     });
             },
 
@@ -161,13 +161,13 @@
                                     return item;
                                 });
 
-                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType);
+                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType , 2);
                             }else{
 
                                 this.BackgroundMessage = '数据库更新操作，成功完成！';
                                 this.MessageType = 'success';
 
-                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType);
+                                this.$emit('childgetcode', this.BackgroundMessage, this.MessageType , 2);
 
                             }
 
@@ -182,7 +182,7 @@
                             return item;
                         });
 
-                        this.$emit('childgetcode', this.BackgroundMessage, this.MessageType);
+                        this.$emit('childgetcode', this.BackgroundMessage, this.MessageType, 2);
                     });
 
             }

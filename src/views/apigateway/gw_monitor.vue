@@ -3,7 +3,7 @@
     @import "../../styles/common.less";
 </style>
 <template>
-    <div class="home-main">
+    <div class="home-main" id="gw_monitor">
         <Row class="margin-top-10">
             <Card>
                 <p slot="title" class="card-title">
@@ -211,6 +211,10 @@
 
             mygetdata(){
 
+                if( document.getElementById('gw_monitor') === null ){
+                    return;
+                }
+
                 let service_params = new URLSearchParams();
                 let task_params = {};
 
@@ -257,6 +261,12 @@
 
             },
 
+            clearTimer(){
+                clearInterval(this.myTimer2);
+
+                console.log('delete timer!')
+            },
+
             init(){
                 this.mygetdata();
             }
@@ -273,17 +283,15 @@
 
         beforeDestroy(){
             clearInterval(this.myTimer2);
-            clearInterval(this.myTimer);
+            // clearInterval(this.myTimer);
 
             console.log('delete timer!')
         },
 
         destroyed(){
-
-            clearInterval(this.myTimer2);
-            clearInterval(this.myTimer);
-
             console.log('delete timer!')
+            clearInterval(this.myTimer2);
+            // clearInterval(this.myTimer);
         }
 
     };

@@ -3,7 +3,7 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
-        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
+        <div class="sidebar-menu-con" :style="{width: shrink?'60px': dynamicsize, overflow: shrink ? 'visible' : 'auto'}">
             <shrinkable-menu 
                 :shrink="shrink"
                 @on-change="handleSubmenuChange"
@@ -91,7 +91,9 @@
                 shrink: false,
                 userName: '',
                 isFullScreen: false,
-                openedSubmenuArr: this.$store.state.app.openedSubmenuArr
+                openedSubmenuArr: this.$store.state.app.openedSubmenuArr,
+
+                dynamicsize:'200px'
             };
         },
         computed: {

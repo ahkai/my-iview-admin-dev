@@ -86,6 +86,9 @@ export default {
         },
 
         mygetdata(){
+            if( document.getElementById('data_source_con') === null ){
+                return;
+            }
 
             let tempoption = {};
             this.myoption = {};

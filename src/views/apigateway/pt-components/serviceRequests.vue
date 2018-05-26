@@ -123,6 +123,10 @@ export default {
 
         mygetdata(){
 
+            if( document.getElementById('service_request_con') === null ){
+                return;
+            }
+
             let tempoption = {};
             let service_params = new URLSearchParams();
             let task_params = {};
@@ -210,7 +214,13 @@ export default {
         this.init();
 
         this.myTimer = setInterval(() => {
-            this.init();
+
+            if(document.getElementById('service_request_con') === null){
+
+            }else{
+                this.init();
+            }
+
         },6000);
 
     },

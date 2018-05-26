@@ -16,6 +16,7 @@
                         <i-select :model.sync="FirstLevel_Array" style="width:200px" @on-change="getleveltwo" >
                             <i-option v-for="(firstitem, index) in FirstLevel_Array" :value="firstitem.obj_id" :key="index">{{firstitem.obj_name}}</i-option>
                         </i-select>
+                        <Button type="primary" @click="toLoading" :disabled="Button1Flag" icon="ios-color-wand-outline">刷新路由配置</Button>
                     </Row>
                 </Card>
                 <Card>
@@ -82,9 +83,11 @@
                 BackgroundMessage:'',
                 MessageType : '',
 
-                ButtonFlag:false,
+                Button1Flag:true,
 
                 TestKey: '',
+
+
 
                 myCount: 0,
                 myCount_total:4,
@@ -93,10 +96,14 @@
         },
         methods: {
 
-            childgetcode( childmsg, childmsgtype){
+            childgetcode( childmsg, childmsgtype, id){
 
                 this.MessageType  = childmsgtype;
                 this.BackgroundMessage = childmsg;
+
+                if( id === 2){
+                    this.Button1Flag = false;
+                }
 
                 this.getCode();
 
@@ -151,6 +158,39 @@
                 this.BackgroundMessage = '后台操作，失败！ ' + vMsg ;
                 this.MessageType = vMsgType;
                 this.getCode();
+            },
+
+            toLoading(){
+                let service_params = new URLSearchParams();
+                let task_params = {};
+
+                service_params.append('service_id', '10000003');       //你要传给后台的参数值 key/value
+                task_params['obj_id'] = 'none';
+
+                service_params.append( 'service_args', util.json2Form(task_params) );
+
+                config_axios.data = service_params;
+                config_axios.url = '/task';
+
+                httpinstance( config_axios )
+                    .then((res) => {
+                        if (res.status === 200) {
+
+                            let TempObj = res.data;
+                            this.FirstLevel_Array = TempObj['LEVEL_1'];
+
+                            this.BackgroundMessage = '数据库更新操作，成功完成！';
+                            this.MessageType = 'success';
+                            this.getCode();
+
+
+                        }
+                    })
+                    .catch(( err )=> {
+                        this.BackgroundMessage = '数据库更新操作，失败！' + err ;
+                        this.MessageType = 'error';
+                        this.getCode();
+                    });
             },
 
             getlevelone () {
